@@ -1,0 +1,1 @@
+{"id":"concept-git-branching-merge-rebase","topic":"Git 分支/merge/rebase/reset","confidence":"high","status":"reviewed","validated_by":["exp-git-reset-modes"],"note":"reset 三模式對照表已被 exp-git-reset-modes 實測支持","wiki_path":"wiki/concepts/git-branching-merge-rebase.md","created":"2026-07-09","updated":"2026-07-09"}

@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "learning_log line",
+  "description": "db/learning_log.jsonl 每一行的結構。append-only。人看的快取仍是 wiki/index.md 與 wiki/log.md；此 JSONL 為可攜出的結構化備份，待安裝 Python 後可被查詢腳本索引。",
+  "type": "object",
+  "required": ["id", "type", "topic", "summary", "confidence", "created"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "唯一識別碼，如 exp-git-reset-modes / concept-git-core-concepts" },
+    "type": { "type": "string", "enum": ["experiment", "concept", "reflection", "ingest"] },
+    "topic": { "type": "string" },
+    "summary": { "type": "string", "description": "一句話摘要" },
+    "hypothesis": { "type": "string", "description": "若 type=experiment" },
+    "result": { "type": "string", "enum": ["supported", "refuted", "partial", "pending", ""], "default": "" },
+    "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+    "code_paths": { "type": "array", "items": { "type": "string" } },
+    "wiki_paths": { "type": "array", "items": { "type": "string" } },
+    "next_questions": { "type": "array", "items": { "type": "string" } },
+    "related": { "type": "array", "items": { "type": "string" } },
+    "created": { "type": "string", "format": "date" }
+  }
+}

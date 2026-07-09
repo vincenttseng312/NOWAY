@@ -1,0 +1,19 @@
+{
+  "id": "code-git-reset-modes",
+  "title": "git reset 三模式驗證腳本",
+  "created": "2026-07-09",
+  "topic": "git reset --soft / --mixed / --hard 的語意",
+  "purpose": "以真實 git 指令驗證 wiki 中 reset 對照表是否正確，示範 H-I-V-R-K-C 閉環中可實際執行的 Verification。",
+  "hypothesis": "git-branching-merge-rebase 頁的 reset 表格（soft 保留 staged；mixed 取消 staged；hard 丟掉 working tree）正確。",
+  "entrypoint": "code/2026-07-09/git-reset-modes/run_experiment.sh",
+  "run_command": "bash code/2026-07-09/git-reset-modes/run_experiment.sh",
+  "test_command": "bash code/2026-07-09/git-reset-modes/run_experiment.sh  # 比對 README「預期輸出」",
+  "expected_output": "soft: status 顯示 'M  file.txt'(staged) 且 file.txt 保有 line2；mixed: ' M file.txt'(unstaged) 且保有 line2；hard: status 為空且 file.txt 只剩 line1；三者 git log 都只剩 C1。",
+  "verified_on_this_machine": true,
+  "related_notes": [
+    "wiki/experiments/git-reset-modes.md",
+    "wiki/concepts/git-branching-merge-rebase.md",
+    "wiki/concepts/git-undo-and-recovery.md"
+  ],
+  "status": "verified"
+}

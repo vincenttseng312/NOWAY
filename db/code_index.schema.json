@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "code_index line",
+  "description": "db/code_index.jsonl 每一行的結構。append-only。記錄每個保存於 code/ 的可複用程式碼資產。",
+  "type": "object",
+  "required": ["id", "title", "created", "entrypoint", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "如 code-git-reset-modes" },
+    "title": { "type": "string" },
+    "created": { "type": "string", "format": "date" },
+    "topic": { "type": "string" },
+    "purpose": { "type": "string" },
+    "hypothesis": { "type": "string" },
+    "entrypoint": { "type": "string", "description": "相對於 repo 根的主檔路徑" },
+    "run_command": { "type": "string" },
+    "test_command": { "type": "string" },
+    "expected_output": { "type": "string" },
+    "verified_on_this_machine": { "type": "boolean", "description": "在本機是否真的跑過（無 Python 的專案通常為 false）" },
+    "related_notes": { "type": "array", "items": { "type": "string" } },
+    "status": { "type": "string", "enum": ["draft", "verified", "archived"] }
+  }
+}
