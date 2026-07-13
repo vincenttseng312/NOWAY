@@ -42,8 +42,12 @@ LLM_Wiki/
 │   └── synthesis/     ← 跨主題分析、查詢歸檔、統整型 reflection
 ├── templates/         ← concept_note / experiment_note / reflection / code_readme
 ├── db/                ← learning_log / experiments / concepts / code_index 的 .jsonl + .schema.json
-└── code/              ← YYYY-MM-DD/<topic>/ 可複用、可重跑的程式碼資產
+├── code/              ← YYYY-MM-DD/<topic>/ 可複用、可重跑的程式碼資產
+└── projects/          ← 自成一體的子專案 KB（有各自的 SCHEMA，不套 H-I-V-R-K-C）
+    └── wazuh-ad-soc/  ← Wazuh×AI×AD 資安監控知識庫（供 RAG/儀表板/聊天機器人）
 ```
+
+> **子專案原則**：`projects/<name>/` 是有獨立消費者與 schema 的系統文件 KB，各自有 `SCHEMA.md`／`index.md`，進該資料夾工作前先讀它自己的 SCHEMA（優先於本 charter 與 `wiki/SCHEMA.md`）。可跨連結 `wiki/concepts/*` 既有內容，但不把系統文件混進個人學習 wiki 的 index。
 
 ## 4. 兩層知識模型（加法式，不互相取代）
 
