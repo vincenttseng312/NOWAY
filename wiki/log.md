@@ -32,3 +32,4 @@
    假設：git-branching-merge-rebase 的 reset 對照表正確；結果：supported（本機真 git 實測 6/6 通過），信心 High
    pages: wiki/experiments/git-reset-modes.md (new); wiki/concepts/git-branching-merge-rebase.md (updated — 表格加實測標記與記憶法); code/2026-07-09/git-reset-modes/ (script+README+manifest)
    schema: wiki/SCHEMA.md 新增標籤 sysinternals/git/github/ci-cd/devops
+## [2026-07-14] lint | 手動結構掃描：35 個內容頁皆有其他知識頁的入站連結；0 個孤兒頁、0 個失效內容 wikilink、0 個重複 slug、0 個未索引頁面。

@@ -2,6 +2,8 @@
 
 本檔是全 KB 的一行摘要目錄。AI 回答前先讀本檔選候選頁，再讀候選頁。`⏳` = 尚未生成（依 SCHEMA 第 9 節分批）。
 
+> **KB 狀態：批 0–7 全數完成（8 批）+ 02-environment 補齊。** 上線兩個關鍵檔：[system-prompt](09-ai-analysis/system-prompt.md)（複製作 AI 助手系統提示詞）+ [rag-integration-spec](09-ai-analysis/rag-integration-spec.md)（RAG/介接設定）。唯一可選後續：填 `entities/` 的 host/account/ip 實體卡（frontmatter 已引用、頁面待建；建議接上真實環境值後再建）。
+
 ---
 
 ## 規格層 _meta/
@@ -26,7 +28,9 @@
 - [data-and-event-flow](01-architecture/data-and-event-flow.md) — 事件五段流程（產生→採集→告警→AI→呈現）
 
 ## 02 環境
-- ⏳ ad-environment / windows11-target / host-inventory
+- [ad-environment](02-environment/ad-environment.md) — AD 網域環境、稽核政策前提、Wazuh 監控 AD（含官方查證）
+- [windows11-target](02-environment/windows11-target.md) — Win11 靶機、Agent eventchannel 採集、Script Block Logging 前提
+- [host-inventory](02-environment/host-inventory.md) — 五台主機清單與屬性（值 env-specific，實體卡待建）
 
 ## 03 Wazuh
 - [wazuh-architecture](03-wazuh/wazuh-architecture.md) — 四大元件（Agent/Manager/Indexer/Dashboard）
@@ -84,6 +88,8 @@
 ## 09 AI 分析與 RAG
 - [ai-analysis-pipeline](09-ai-analysis/ai-analysis-pipeline.md) — 告警→實體→關聯→分級→MITRE→產出
 - [rag-knowledge-base-design](09-ai-analysis/rag-knowledge-base-design.md) — chunking/metadata/routing/防幻覺
+- [rag-integration-spec](09-ai-analysis/rag-integration-spec.md) — ⭐ 完整整合規格（14 項，含 alert/dashboard/chatbot 介接）
+- [system-prompt](09-ai-analysis/system-prompt.md) — ⭐ 最終「資安事件分析助理」system prompt（可直接複製上線）
 
 ## 10 儀表板（18，套 dashboard-widget 模板）
 - [dashboard-overview](10-dashboard/dashboard-overview.md) — 元件地圖與資料分工
@@ -116,10 +122,14 @@
 - audience-adapt：[explain-for-manager](11-qa-chatbot/explain-for-manager.md)、[explain-for-analyst](11-qa-chatbot/explain-for-analyst.md)
 
 ## 12 事件回應
-- ⏳ ir-sop / report-templates/*（10 份）
+- [ir-sop](12-incident-response/ir-sop.md) — 事件回應六階段 SOP（準備→偵測→控制→根除→復原→檢討）
+- report-templates/（10 份，套 report 模板，可作 LLM 回答模板）：
+  - [single-alert-summary](12-incident-response/report-templates/single-alert-summary.md) / [multi-alert-aggregate](12-incident-response/report-templates/multi-alert-aggregate.md) / [attack-timeline-report](12-incident-response/report-templates/attack-timeline-report.md)
+  - 情境專用：[rdp-bruteforce-report](12-incident-response/report-templates/rdp-bruteforce-report.md) / [powershell-incident-report](12-incident-response/report-templates/powershell-incident-report.md) / [ad-account-anomaly-report](12-incident-response/report-templates/ad-account-anomaly-report.md) / [host-compromise-report](12-incident-response/report-templates/host-compromise-report.md)
+  - 對象分版：[manager-summary](12-incident-response/report-templates/manager-summary.md)（主管） / [analyst-report](12-incident-response/report-templates/analyst-report.md)（技術） / [demo-report](12-incident-response/report-templates/demo-report.md)（Demo）
 
 ## 13 Demo
-- ⏳ demo-script
+- [demo-script](13-demo/demo-script.md) — RDP 暴力破解鏈的 Demo 劇本（攻擊面↔系統反應對照）
 
 ## templates/
 - [attack-scenario](templates/attack-scenario.md) / [qa-entry](templates/qa-entry.md) / [event](templates/event.md) / [entity-card](templates/entity-card.md) / [dashboard-widget](templates/dashboard-widget.md) / [report-template](templates/report-template.md)

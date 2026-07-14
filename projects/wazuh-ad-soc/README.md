@@ -27,4 +27,8 @@
 
 ## 狀態
 
-本 KB 為 `LLM_Wiki` 的子專案，目前完成 **批 0（骨架）**：SCHEMA、_meta 規格層、templates。內容頁依 SCHEMA 第 9 節分批生成。
+本 KB 為 `LLM_Wiki` 的子專案，**批 0–7 全數完成（8 批，共 132 檔）**：骨架/規格層/模板、總覽/架構、Wazuh、Windows/AD 事件、攻擊情境+偵測、MITRE/嚴重性/AI/儀表板/問答、事件回應 SOP/報告模板/Demo、RAG 整合規格+system prompt。
+
+**要上線 AI 助手**：複製 [09-ai-analysis/system-prompt.md](09-ai-analysis/system-prompt.md) 作系統提示詞，依 [09-ai-analysis/rag-integration-spec.md](09-ai-analysis/rag-integration-spec.md) 設定 RAG 與介接。
+
+**可選後續**：填 `entities/` 的 host/account/ip 實體卡（各頁 frontmatter 已引用、實體卡本身待建）；技術卡可再擴充；接上即時 Wazuh 資料源後在 system prompt 補即時查詢工具。
