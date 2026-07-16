@@ -34,6 +34,12 @@ last_updated: 2026-07-09
    └─ Wazuh Server/Manager  <manager-ip>
 ```
 
+### 2.1 目前設計基線（2026-07-14）
+
+使用者提供的最新架構圖將佔位拓樸具體化為：Windows Server 2019 DC、兩台 Windows 11、Wazuh Server、OPNsense、AI Server 與授權測試 attacker，共七個角色。OPNsense 應作為跨區流量的唯一控制點；AI Server 的 MCP 介接與 attacker 對 Windows 11 B 的 RDP 路徑都只是設計意圖，尚未證實已開放或已部署。
+
+資源規格、信任邊界與驗收項目見 [[doc-architecture-baseline-validation]]。實際 CIDR/IP/VLAN/規則仍未提供，繼續以 `env-specific` 處理。
+
 - 攻擊者主機**僅**位於外部網段，經路由器才能觸及靶機——這條路徑是攻擊模擬與偵測的觀察面。
 - 內部網段承載正常網域與監控流量。
 
@@ -49,7 +55,7 @@ Host（含 router、attacker）、IP（zone：internal/external/attacker）。
 網路拓樸、網段、內網、外網、攻擊網段、路由器、隔離、segmentation、DMZ、topology。
 
 ## 6. 相關文件連結
-- [[doc-system-architecture]]、[[doc-host-roles]]、[[doc-host-inventory]]
+- [[doc-system-architecture]]、[[doc-host-roles]]、[[doc-host-inventory]]、[[doc-architecture-baseline-validation]]
 
 ## 7. 後續可擴充內容
 - 實際 IP/CIDR/VLAN 表（填入後把 verification_status 提升）。

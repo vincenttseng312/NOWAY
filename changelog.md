@@ -2,6 +2,8 @@
 
 本檔記錄 wiki 結構層級的重大變更（新增頁型、導入流程、分片等）。逐次 ingest／實驗的細節在 `wiki/log.md`；本檔只留「里程碑」。
 
+- 2026-07-14：將使用者提供的 Wazuh × AD × OPNsense × AI SOC 架構圖納入 H-I-V-R-K-C 閉環。新增兩份 raw（圖片轉錄、官方文件研究）、兩份 source 摘要、分段與遙測 concept、架構審查 experiment；子專案新增七角色架構基線與驗證矩陣，並更新 topology/inventory/system/index。完成的是文件層審查；Agent、OPNsense 規則、MCP、RDP/WinRM 實機驗證仍明確維持待執行。
+
 - 2026-07-09：導入 H-I-V-R-K-C 學習閉環（加法式）。新增 `templates/`（concept/experiment/reflection/code_readme）、`db/`（learning_log/experiments/concepts/code_index 的 jsonl 與 2 份 schema）、`code/`、`wiki/experiments/` 頁型、本 changelog。既有 34 頁保持不動。SCHEMA.md 記錄新約定與「無 Python → V/C 邊界」。完成第一個實驗 [[git-reset-modes]]（reset 三模式，本機實測 supported），保存程式碼於 `code/2026-07-09/git-reset-modes/`。
 - 2026-07-09：改寫 `CLAUDE.md` 為正式版操作 charter（13 節，涵蓋權威順序／兩層知識模型／查詢協定／H-I-V-R-K-C／ingest／V-C 邊界／資安防禦原則／規模化紀律／維護節奏／工具限制）。確立 `LLM_Wiki\CLAUDE.md` 為正本、`tt\CLAUDE.md` 降為指標，避免雙路徑漂移。
 - 2026-07-09：新增子專案 `projects/wazuh-ad-soc/`（Wazuh × 生成式 AI × AD 資安監控知識庫，供 RAG/儀表板/聊天機器人使用）。此為自成一體的系統文件 KB，**有自己的 SCHEMA/index，不套 H-I-V-R-K-C**，但跨連結父層 DFIR 概念群（windows-event-log-and-sysmon、persistence-mechanisms、ioc-ttp-and-detection-engineering 等，引用不複製）。完成批 0 骨架：SCHEMA、README、index、`_meta/`×5（rag-metadata-schema/taxonomy/entity-model/routing-rules/citation-hallucination-rules）、`templates/`×6。核心紀律：不編造 rule.id/Event ID/technique ID，env-specific 值標「需依實際環境確認」。
@@ -15,3 +17,4 @@
 - 2026-07-09：`projects/wazuh-ad-soc/` 完成批 6（12-incident-response + 13-demo，12 頁）：ir-sop（六階段）、10 份報告模板（single-alert/multi-alert/attack-timeline/rdp-bruteforce/powershell/ad-account-anomaly/host-compromise/manager-summary/analyst-report/demo-report，每份含可填 markdown 骨架供 LLM 直接套用作回答模板）、demo-script（RDP 暴力破解鏈劇本，攻擊面↔系統反應對照，僅描述展示流程無武器化指令）。報告範例值全佔位、統計只反映實際資料。累計 130 檔。僅剩批 7（RAG 整合規格 + 最終 system prompt）。
 - 2026-07-09：`projects/wazuh-ad-soc/` 完成批 7（09-ai-analysis，2 頁），**KB 批 0–7 全數完成**。rag-integration-spec（14 項整合規格，含 Wazuh alert JSON/Dashboard API/AI Chatbot 三大介接方式）、system-prompt（「資安事件分析助理」可直接複製的系統提示詞，內含 7 條不可違反規則：不編造證據/標不確定/資料不足主動說明/防禦優先不給攻擊指令/可追溯/單一證據弱/看對象調整）。累計 132 檔。可選後續：entities/ 實體卡、即時資料源工具。子專案交付完成。
 - 2026-07-09：補齊 `projects/wazuh-ad-soc/02-environment/` 3 頁（ad-environment、windows11-target、host-inventory），收乾之前懸空的連結（host-roles/network-topology 曾以 ⏳ 引用）。內容經 Wazuh 與 Microsoft 官方文件查證後統整並附來源：Wazuh 預設採集 System/Security/Application 通道（ossec.conf localfile/eventchannel/XPATH）、PowerShell 需 Script Block Logging（Microsoft-Windows-PowerShell/Operational）、AD 監控靠 DC 安全事件+Sysmon、網域加入稽核需 Audit Account Management（Event 4741）。env-specific 值全佔位。累計 135 檔。唯一剩選填的 entities/ 實體卡（建議接真實環境後建）。
+- 2026-07-16：lint 大保養。修 20 條專案內斷鏈（dsh-/evt-/scn-/qa- 前綴不一致，跨 11 檔）→ 0 斷鏈；Server 版本統一為 2019（規劃期，raw 保留草稿 2022/2025）並修正 1 處被 sed 誤壓的 AD 功能等級事實。確立「專案級每 batch 後 lint」的維護節奏。

@@ -7,7 +7,7 @@ summary: "把一段時間/一主機/一帳號的多筆告警彙整成一份 Inci
 audience: analyst
 required_inputs: ["timestamp", "rule.level", "agent.name", "data.win.system.eventID"]
 optional_inputs: ["rule.mitre.id", "data.win.eventdata.targetUserName", "data.win.eventdata.ipAddress"]
-related_docs: [doc-alert-to-report-pipeline, rpt-full-report, doc-correlation-rules]
+related_docs: [doc-alert-to-report-pipeline, qa-full-report, doc-correlation-rules]
 tags: [cat:report, type:report]
 confidence: medium
 verification_status: needs-verification
@@ -70,4 +70,4 @@ last_updated: 2026-07-09
 （值為佔位。）
 
 ## 相關文件
-[[doc-alert-to-report-pipeline]]、[[rpt-full-report]]、[[doc-correlation-rules]]
+[[doc-alert-to-report-pipeline]]、[[qa-full-report]]、[[doc-correlation-rules]]

@@ -107,8 +107,8 @@ LLM_Wiki/
 
 ## 10. 規模化紀律
 
-- **原子頁**：軟上限 400 行 / 硬上限 800 行，超過就拆（抽子概念成新頁、父頁連過去）。
-- **分片**：`index.md` 超 ~300 行或 wiki 超 ~150 頁 → 分片為 `wiki/indexes/<type>.md`。
+- **原子頁**：軟上限 600 行 / 硬上限 1000 行，超過就拆（抽子概念成新頁、父頁連過去）。
+- **分片**：`index.md` 超 ~500 行或 wiki 超 ~150 頁 → 分片為 `wiki/indexes/<type>.md`。
 - 每頁必備 frontmatter（`type`/`title`/`tags`/`created`/`updated` + 類型專屬欄位）。
 - 每個跨頁引用用 `[[wikilink]]`；更新用 `str_replace` 手術式編輯。
 - 每條 wiki 主張都要能追到 `sources`（避免 silent corruption 與 wiki 讀自己輸出的漂移）。

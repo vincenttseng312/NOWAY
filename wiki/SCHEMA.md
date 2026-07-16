@@ -55,6 +55,15 @@
 - `ci-cd` — CI/CD 自動化流程，目前主要指 GitHub Actions。
 - `devops` — 跨工具鏈的維運／協作流程主題。
 - `sysinternals` — 微軟 Sysinternals 工具集。
+- `ai-security` — AI 系統或 AI 輔助安全工作的主題。
+- `llm-security` — LLM、RAG、agent 的攻擊面、測試與防護。
+- `security-tools` — 具體資安工具或產品實體。
+- `pentesting` — 已授權滲透測試與攻擊模擬。
+- `appsec` — 應用程式安全。
+- `sast` — 靜態應用程式安全測試。
+- `guardrails` — AI 應用的輸入、輸出與工具使用防護。
+- `mcp` — Model Context Protocol 及其工具整合安全。
+- `soc` — Security Operations Center 的偵測、調查與處置流程。
 
 ## 頁面大小限制
 

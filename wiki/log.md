@@ -33,3 +33,21 @@
    pages: wiki/experiments/git-reset-modes.md (new); wiki/concepts/git-branching-merge-rebase.md (updated — 表格加實測標記與記憶法); code/2026-07-09/git-reset-modes/ (script+README+manifest)
    schema: wiki/SCHEMA.md 新增標籤 sysinternals/git/github/ci-cd/devops
 ## [2026-07-14] lint | 手動結構掃描：35 個內容頁皆有其他知識頁的入站連結；0 個孤兒頁、0 個失效內容 wikilink、0 個重複 slug、0 個未索引頁面。
+## [2026-07-14] ingest + experiment | Wazuh × AD × OPNsense × AI SOC 架構圖與官方文件研究
+   pages: raw/wazuh-ad-soc-architecture-diagram-2026-07-14.md、raw/wazuh-ad-soc-architecture-research-2026-07-14.md；wiki/sources/wazuh-ad-soc-architecture-diagram.md、wiki/sources/wazuh-ad-soc-architecture-research.md、wiki/concepts/soc-lab-segmentation-and-telemetry.md、wiki/experiments/wazuh-ad-soc-architecture-review.md
+   project: projects/wazuh-ad-soc/01-architecture/architecture-baseline-and-validation.md (new); network-topology.md、host-inventory.md、system-architecture.md、index.md (updated)
+   result: 文件層 H-I-V-R-K-C completed / partial；實機 Agent、OPNsense、MCP、RDP/WinRM 驗證待執行，未宣稱已部署。
+## [2026-07-14] lint | post-ingest 手動結構掃描：39 個內容頁、0 個失效 wikilink、0 個重複 slug、0 個孤兒頁（排除 index/log/SCHEMA）；experiments.jsonl 與 learning_log.jsonl 皆成功解析。
+## [2026-07-14] lint | 跨 agent 一致性稽核（本 session 覆核 Codex 的架構整合）：5 個新架構檔（實驗頁/基線頁/soc-lab 概念/2 來源）之 wikilink 對 305 個已知 id/slug 全數解析，0 斷鏈；概念頁遵循 KB frontmatter 慣例。修正 host-inventory 殘留：主要實體「Host ×5」→「×7」、「五張實體卡」→「七張」（合併 5→7 角色時未同步）。
+## [2026-07-15] ingest + experiment | MOND.local AD CS 防禦偵測實驗室聚焦圖與官方研究
+   pages: raw/adcs-lab-focus-architecture-2026-07-15.md、raw/adcs-lab-focus-research-2026-07-15.md；wiki/sources/adcs-lab-focus-architecture.md、wiki/sources/adcs-lab-focus-research.md、wiki/concepts/adcs-esc-detection-baseline.md、wiki/experiments/adcs-lab-focus-review.md
+   project: projects/wazuh-ad-soc/02-environment/adcs-environment.md (new); index.md、host-inventory.md (updated)
+   result: 文件層 H-I-V-R-K-C completed / partial；推薦 Server 2022 FFL/DFL 2016、Wazuh 4.14.6、OPNsense CE 26.1.11、Win11 Enterprise 25H2；CA/Agent/GPO/事件未做實機宣稱，均待驗證。
+## [2026-07-16] ingest | AI Security Tools official documentation research batch
+   pages: raw/ai-security-tools-research-2026-07-16.md；wiki/sources/ai-security-tools-research-2026-07-16.md；7 entity pages (pentestgpt, burpgpt, microsoft-security-copilot, deepcode-ai, hexstrike-ai, garak, lakera-guard)；wiki/concepts/ai-security-tool-selection.md
+   result: 以官方文件、官方 GitHub 與同行研究區分滲透測試 agent、Web AppSec、Microsoft SOC、SAST、LLM 紅隊與 runtime guardrail；BurpGPT Community 已停維護、DeepCode AI 非獨立產品、攻擊自動化工具限已授權隔離環境。
+## [2026-07-16] lint | 資料庫大保養（手動全庫掃描 wiki + projects/wazuh-ad-soc）
+   斷鏈：修 20 條前綴/命名不一致（doc-→dsh- ×17、doc-windows-security-event-overview→evt-windows-security-overview、evt-ad-abnormal-logon→scn-ad-abnormal-logon、rpt-full-report→qa-full-report），跨 11 檔；連帶消除 4 個假孤兒。最終 0 斷鏈。
+   版本：依使用者裁決將 Server 版本統一為 2019（規劃期，可能再調；raw 保留草稿值 2022/2025 作 ground truth）。修正 version-sed 誤壓的 1 處功能等級事實（adcs-environment：Server 2019 無專屬功能等級，最高採 Windows Server 2016 FFL/DFL）。log 歷史條目維持原值不改。
+   其餘：0 重複 id、0 超大頁（皆 <350 行）、Jul15 adcs 與 Jul16 AI 工具頁均已收錄、db 三檔一致。誤報排除 [[slug]]/[[wikilink]]/[[wikilinks]]（模板文字範例）。
+   cadence 訊號：專案（projects/）應每完成一個 batch 就跑一次「專案內」lint，勿只掃 wiki/——本次 20 條斷鏈皆為只掃 wiki 時漏掉的專案內部積累。

@@ -38,7 +38,7 @@ last_updated: 2026-07-09
 水平時間軸；依戰術著色（Credential Access/Priv-Esc/…）；關聯鏈以連線標記。
 
 ## 7. 使用者可互動功能
-刷選時間窗、點節點→ [[doc-event-detail-view]]、依實體過濾。
+刷選時間窗、點節點→ [[dsh-event-detail-view]]、依實體過濾。
 
 ## 8. 篩選條件
 時間範圍、主機、帳號、來源 IP。

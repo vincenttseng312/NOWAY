@@ -6,7 +6,7 @@ category: architecture
 summary: "本專題由蒐集層（Wazuh Agent/Manager）、分析層（生成式 AI + RAG 知識庫）、呈現層（儀表板 + 問答）三層組成，資料自 Windows/AD 事件流向 AI 再流向使用者介面。"
 tags: [cat:overview, type:architecture]
 related_entities: [ent-host-win11-target, ent-host-dc, ent-host-wazuh-manager]
-related_docs: [doc-network-topology, doc-host-roles, doc-data-and-event-flow, doc-wazuh-role, doc-ai-role]
+related_docs: [doc-network-topology, doc-host-roles, doc-data-and-event-flow, doc-architecture-baseline-validation, doc-wazuh-role, doc-ai-role]
 keywords: ["系統架構", "三層架構", "蒐集層", "分析層", "呈現層", "Wazuh", "LLM", "RAG", "system architecture", "pipeline"]
 confidence: medium
 verification_status: needs-verification
@@ -37,6 +37,8 @@ Wazuh Manager  ──────────►                    ◄───
 - **分析層**：AI 以 alert + 本 KB（RAG）為輸入產出分析。見 [[doc-ai-role]]。
 - **呈現層**：儀表板（[[doc-dashboard-role]]）與問答（[[doc-qa-role]]）。
 
+最新設計圖進一步指定 OPNsense 為跨區 firewall/IDS/VPN 控制點、AI Server 以 MCP 取得 Wazuh 資料，並把 RDP/WinRM 列為受控測試面。這些是待實機驗證的架構意圖；具體信任邊界與驗收矩陣見 [[doc-architecture-baseline-validation]]。
+
 ## 3. 與本專題的關聯
 本頁是架構總覽；網段與隔離見 [[doc-network-topology]]；每台主機職責見 [[doc-host-roles]]；資料如何逐段流動見 [[doc-data-and-event-flow]]。
 
@@ -47,7 +49,7 @@ Host（靶機、DC、Wazuh Manager、路由器、攻擊者主機）、Alert、Ev
 系統架構、三層、蒐集/分析/呈現、pipeline、Wazuh Manager、LLM、RAG、SOC 架構。
 
 ## 6. 相關文件連結
-- [[doc-network-topology]]、[[doc-host-roles]]、[[doc-data-and-event-flow]]
+- [[doc-network-topology]]、[[doc-host-roles]]、[[doc-data-and-event-flow]]、[[doc-architecture-baseline-validation]]
 - [[doc-wazuh-role]]、[[doc-ai-role]]、[[doc-dashboard-role]]、[[doc-qa-role]]
 
 ## 7. 後續可擴充內容

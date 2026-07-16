@@ -6,7 +6,7 @@ category: wazuh
 summary: "Windows 11 靶機/AD DC 產生的 Windows Event Log（Security、System、PowerShell 等通道）由 Wazuh Agent 讀取，送至 Manager 經 decoder 解析成 data.win.* 欄位、rule 比對後成為告警。providerName 與 location 指出事件來源。"
 tags: [cat:wazuh, type:wazuh, source:windows-security]
 related_entities: [ent-host-win11-target, ent-event]
-related_docs: [doc-wazuh-agent, doc-wazuh-manager, doc-windows-security-event-overview]
+related_docs: [doc-wazuh-agent, doc-wazuh-manager, evt-windows-security-overview]
 keywords: ["Windows 事件", "eventchannel", "Event Log", "decoder", "data.win", "providerName", "location", "windows events into wazuh"]
 confidence: medium
 verification_status: needs-verification
@@ -41,13 +41,13 @@ rule 比對 → 產生 alert（含 rule.*、rule.mitre.*）
 > 稽核政策設定、採集的通道、decoder 版本皆為部署相關（需依實際環境確認）。特定 Event ID 語意見 04-windows-ad-events，並依 Microsoft 官方確認。
 
 ## 4. AI 如何使用
-用 `providerName`/`location` 判斷事件來源類別；用 `eventID` 連到事件頁（[[doc-windows-security-event-overview]]，⏳批 3）；遇到「應該有卻沒有」的事件，提示可能是稽核未開或未採集。
+用 `providerName`/`location` 判斷事件來源類別；用 `eventID` 連到事件頁（[[evt-windows-security-overview]]，⏳批 3）；遇到「應該有卻沒有」的事件，提示可能是稽核未開或未採集。
 
 ## 5. 需依實際環境確認
 啟用的稽核政策、採集通道、decoder。
 
 ## 相關文件
-[[doc-wazuh-agent]]、[[doc-wazuh-manager]]、[[doc-windows-security-event-overview]]；跨連父層 [[windows-event-log-and-sysmon]]。
+[[doc-wazuh-agent]]、[[doc-wazuh-manager]]、[[evt-windows-security-overview]]；跨連父層 [[windows-event-log-and-sysmon]]。
 
 ## 建議查證來源
 Wazuh 官方文件、Microsoft Windows Security Auditing 文件。

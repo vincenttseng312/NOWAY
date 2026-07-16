@@ -9,7 +9,7 @@ event_source: ad
 windows_event_ids: ["4720", "4728/4732/4756", "4740", "4768/4769/4771 (需確認)", "5136 (需確認)"]
 wazuh_sources: []
 related_entities: [ent-host-dc, ent-account]
-related_docs: [evt-windows-security-overview, evt-user-creation, evt-group-membership-change, evt-ad-abnormal-logon]
+related_docs: [evt-windows-security-overview, evt-user-creation, evt-group-membership-change, scn-ad-abnormal-logon]
 risk_level: ""
 confidence: medium
 verification_status: needs-verification
@@ -60,7 +60,7 @@ IT 正常的帳號生命週期管理、批次佈建、目錄同步工具。
 確認變更是否經授權；未授權則凍結帳號、回溯操作者來源，連 [[doc-ir-sop]]（⏳批 6）。
 
 ## 相關文件
-[[evt-windows-security-overview]]、[[evt-user-creation]]、[[evt-group-membership-change]]、[[evt-ad-abnormal-logon]]；跨連父層 [[persistence-mechanisms]]。
+[[evt-windows-security-overview]]、[[evt-user-creation]]、[[evt-group-membership-change]]、[[scn-ad-abnormal-logon]]；跨連父層 [[persistence-mechanisms]]。
 
 ## 建議查證來源
 Microsoft Windows Security Auditing 文件。

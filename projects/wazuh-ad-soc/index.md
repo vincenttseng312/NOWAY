@@ -24,13 +24,15 @@
 ## 01 系統架構
 - [system-architecture](01-architecture/system-architecture.md) — 三層架構（蒐集/分析/呈現）
 - [network-topology](01-architecture/network-topology.md) — 內外網段與路由器隔離（值 env-specific）
+- [architecture-baseline-and-validation](01-architecture/architecture-baseline-and-validation.md) — ⭐ 2026-07-14 七角色基線、信任邊界與實機驗證矩陣
 - [host-roles](01-architecture/host-roles.md) — 五類主機職責
 - [data-and-event-flow](01-architecture/data-and-event-flow.md) — 事件五段流程（產生→採集→告警→AI→呈現）
 
 ## 02 環境
 - [ad-environment](02-environment/ad-environment.md) — AD 網域環境、稽核政策前提、Wazuh 監控 AD（含官方查證）
+- [adcs-environment](02-environment/adcs-environment.md) — ⭐ MOND.local AD CS 偵測 lab：CA、範本、稽核、版本基線與驗收
 - [windows11-target](02-environment/windows11-target.md) — Win11 靶機、Agent eventchannel 採集、Script Block Logging 前提
-- [host-inventory](02-environment/host-inventory.md) — 五台主機清單與屬性（值 env-specific，實體卡待建）
+- [host-inventory](02-environment/host-inventory.md) — 七角色清單、圖中資源基線與待填實體卡（值 env-specific）
 
 ## 03 Wazuh
 - [wazuh-architecture](03-wazuh/wazuh-architecture.md) — 四大元件（Agent/Manager/Indexer/Dashboard）

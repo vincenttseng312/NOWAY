@@ -38,7 +38,7 @@ last_updated: 2026-07-09
 紅/橙色卡片、依風險排序、critical 置頂並醒目。
 
 ## 7. 使用者可互動功能
-點卡片→ [[doc-event-detail-view]]；標記已讀/處理中。
+點卡片→ [[dsh-event-detail-view]]；標記已讀/處理中。
 
 ## 8. 篩選條件
 時間範圍、嚴重性 >= high。

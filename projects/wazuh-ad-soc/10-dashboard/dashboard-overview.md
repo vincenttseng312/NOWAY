@@ -9,7 +9,7 @@ data_fields: []
 ai_inputs: []
 viz_type: ""
 filters: ["時間範圍", "嚴重性", "主機", "來源 IP"]
-related_docs: [doc-dashboard-role, doc-soc-home, doc-ai-analysis-pipeline]
+related_docs: [doc-dashboard-role, dsh-soc-home, doc-ai-analysis-pipeline]
 confidence: medium
 verification_status: needs-verification
 source_refs: ["Wazuh 官方文件"]
@@ -26,14 +26,14 @@ last_updated: 2026-07-09
 分析人員/主管一眼掌握現況；作為其他儀表板頁的索引。
 
 ## 3. 元件清單
-- 入口：[[doc-soc-home]]
-- 卡片：[[doc-high-risk-events-card]]、[[doc-severity-distribution]]
-- 排行：[[doc-top-source-ips]]、[[doc-top-targeted-hosts]]、[[doc-top-affected-accounts]]
-- 時序：[[doc-attack-timeline]]、[[doc-logon-failure-trend]]
-- 專項監控：[[doc-rdp-attack-monitor]]、[[doc-powershell-activity]]、[[doc-ad-account-change-monitor]]
-- 分析：[[doc-mitre-distribution]]、[[doc-event-detail-view]]
-- AI 區塊：[[doc-ai-summary-block]]、[[doc-ai-remediation-block]]、[[doc-qa-interface]]
-- 展示：[[doc-demo-dashboard]]
+- 入口：[[dsh-soc-home]]
+- 卡片：[[dsh-high-risk-events-card]]、[[dsh-severity-distribution]]
+- 排行：[[dsh-top-source-ips]]、[[dsh-top-targeted-hosts]]、[[dsh-top-affected-accounts]]
+- 時序：[[dsh-attack-timeline]]、[[dsh-logon-failure-trend]]
+- 專項監控：[[dsh-rdp-attack-monitor]]、[[dsh-powershell-activity]]、[[dsh-ad-account-change-monitor]]
+- 分析：[[dsh-mitre-distribution]]、[[dsh-event-detail-view]]
+- AI 區塊：[[dsh-ai-summary-block]]、[[dsh-ai-remediation-block]]、[[dsh-qa-interface]]
+- 展示：[[dsh-demo-dashboard]]
 
 ## 4. 資料來源分工
 Wazuh 欄位（即時數值，見 [[doc-wazuh-field-to-ai-mapping]]）+ AI 分析輸出（摘要/風險/MITRE，見 [[doc-ai-analysis-pipeline]]）。
@@ -45,4 +45,4 @@ Wazuh 欄位（即時數值，見 [[doc-wazuh-field-to-ai-mapping]]）+ AI 分�
 所有數值來自實際 Wazuh 資料源；本 KB 只定義「元件要什麼、怎麼呈現」，不含真實數據。
 
 ## 相關文件
-[[doc-dashboard-role]]、[[doc-soc-home]]、[[doc-ai-analysis-pipeline]]
+[[doc-dashboard-role]]、[[dsh-soc-home]]、[[doc-ai-analysis-pipeline]]
