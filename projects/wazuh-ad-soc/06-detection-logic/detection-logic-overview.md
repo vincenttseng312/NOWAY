@@ -3,7 +3,7 @@ id: doc-detection-logic-overview
 title: "偵測邏輯總覽"
 doc_type: detection
 category: detection
-summary: "本專題偵測分兩層：單點規則（Wazuh 依單一事件觸發告警）與關聯偵測（跨事件/時間的行為型樣，多由後端 AI 或關聯規則完成）。好的偵測強調行為鏈與基準偏離，而非單一指標。"
+summary: "本專題偵測分單點規則與跨事件關聯兩層；驗證再以 None、Telemetry、Failed、Success 四態區分遙測缺口、規則缺口與規則失效，並以固定 ground truth 做回歸。"
 tags: [cat:detection, type:detection]
 related_entities: [ent-alert, ent-rule]
 related_docs: [doc-correlation-rules, doc-wazuh-rules-and-levels, doc-ioc-ttp-detection]
@@ -13,9 +13,9 @@ windows_event_ids: []
 risk_level: ""
 confidence: medium
 verification_status: needs-verification
-source_refs: ["Wazuh 官方文件", "MITRE ATT&CK 官方網站"]
+source_refs: ["Wazuh 官方文件", "MITRE ATT&CK 官方網站", "range-main", "Threat Hunting Essential 期中／期末報告"]
 keywords: ["偵測邏輯", "detection logic", "單點規則", "關聯偵測", "行為鏈", "detection engineering"]
-last_updated: 2026-07-09
+last_updated: 2026-07-20
 ---
 
 # 偵測邏輯總覽
@@ -33,14 +33,27 @@ last_updated: 2026-07-09
 更佳：  行為鏈 + 時間窗（Office→PowerShell→網路→寫檔→持久化 within N 分鐘）
 ```
 
-## 3. 本專題偵測地圖
+## 3. 四態偵測驗證
+
+每個情境的 `expected signal × sensor` 不只記 pass/fail，而應記：
+
+| 狀態 | 意義 | 優先修正 |
+|---|---|---|
+| `None` | Ground truth 預期有訊號，但 sensor 無資料 | Agent、audit policy、Sysmon filter、鏡像／路由、時間同步 |
+| `Telemetry` | 原始資料存在，未形成規則／告警 | decoder、欄位 mapping、規則 |
+| `Failed` | 規則存在但未命中該 run | 規則條件、門檻、版本或 TTP 變體 |
+| `Success` | 命中且可回溯至原始 artifact | 加入 regression corpus 並觀察誤報 |
+
+驗證資料至少包含 run ID、UTC timeline、規則與 sensor 版本、PCAP／EVTX／alert JSON、預期訊號與實際結果。Dashboard 截圖是輔助證據，不可取代 raw artifact 或重放。
+
+## 4. 本專題偵測地圖
 每個 05-attack-scenarios 情境頁的第 3–6 段（可觀測跡象／Windows 事件／Wazuh 欄位／MITRE）就是該情境的偵測邏輯；本資料夾提供「跨情境的關聯」與「品質原則」的統整。
 
-## 4. 與 AI 的關係
-單點告警是 AI 的輸入；AI 負責做關聯、去誤報、串成事件敘事（見 [[doc-ai-role]]、[[doc-alert-to-report-pipeline]]）。
+## 5. 與 AI 的關係
+單點告警是 AI 的輸入；AI 負責做關聯、提供誤報判讀線索、串成事件敘事（見 [[doc-ai-role]]、[[doc-alert-to-report-pipeline]]）。AI 不得自行充當 ground truth，也不能在缺少證據時宣稱已排除誤報。
 
-## 5. 需依實際環境確認
-Wazuh 規則集、關聯是由 Wazuh 規則還是後端 AI 完成、各門檻參數。
+## 6. 需依實際環境確認
+Wazuh 規則集、關聯是由 Wazuh 規則還是後端 AI 完成、各門檻參數、ground-truth corpus 與 scorecard schema。
 
 ## 相關文件
 [[doc-correlation-rules]]、[[doc-wazuh-rules-and-levels]]；跨連父層 [[ioc-ttp-and-detection-engineering]]。

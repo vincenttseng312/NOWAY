@@ -10,8 +10,8 @@ related_docs: [doc-system-architecture, doc-host-roles, doc-host-inventory]
 keywords: ["網路拓樸", "內部網段", "外部網段", "路由器", "網段隔離", "攻擊網段", "network topology", "segmentation"]
 confidence: medium
 verification_status: env-specific
-source_refs: []
-last_updated: 2026-07-09
+source_refs: ["range-main", "Threat Hunting Essential 期中／期末報告"]
+last_updated: 2026-07-20
 ---
 
 # 網路拓樸
@@ -40,6 +40,20 @@ last_updated: 2026-07-09
 
 資源規格、信任邊界與驗收項目見 [[doc-architecture-baseline-validation]]。實際 CIDR/IP/VLAN/規則仍未提供，繼續以 `env-specific` 處理。
 
+### 2.2 Detection Range 參考模型（proposed）
+
+[[range-main]] 提供可供後續演進的兩層參考模型，但**不代表目前環境已部署 Ludus、GOAD、Zeek 或 CALDERA**：
+
+```text
+[ Control plane：管理、部署、規則同步、AI/API ]
+                         │（最小權限、獨立稽核）
+[ Data plane：Attacker → OPNsense/Suricata → AD/Windows/Wazuh ]
+                         ├─ 南北向 PCAP：邊界 sensor
+                         └─ 東西向 PCAP：內部 mirror/sensor（選配）
+```
+
+內層分區優先使用靜態路由與防火牆規則，避免不必要 NAT 隱藏來源；Internet 邊界才使用必要的 NAT。這個模型要在實際 CIDR、OPNsense 介面、回程路由與管理來源確定後，才能轉為 deployed baseline。
+
 - 攻擊者主機**僅**位於外部網段，經路由器才能觸及靶機——這條路徑是攻擊模擬與偵測的觀察面。
 - 內部網段承載正常網域與監控流量。
 
@@ -60,3 +74,4 @@ Host（含 router、attacker）、IP（zone：internal/external/attacker）。
 ## 7. 後續可擴充內容
 - 實際 IP/CIDR/VLAN 表（填入後把 verification_status 提升）。
 - 防火牆與路由規則、網路模擬（如 FakeNet/INetSim）配置。
+- 決定是否需要內部 mirror／Zeek；若只用 OPNsense，必須標明看不到哪些同網段東西向流量。

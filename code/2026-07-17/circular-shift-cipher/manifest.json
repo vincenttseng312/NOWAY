@@ -1,0 +1,19 @@
+{
+  "id": "code-circular-shift-cipher",
+  "title": "循環移位對稱密碼重建與驗證",
+  "created": "2026-07-17",
+  "topic": "驗證 Masud et al. 2022 所述密碼",
+  "purpose": "重建論文密碼並驗證金鑰生成、round-trip 與金鑰表示邊界",
+  "hypothesis": "金鑰生成重現 Table I 且 encrypt/decrypt round-trip",
+  "entrypoint": "code/2026-07-17/circular-shift-cipher/cipher.py",
+  "run_command": "python code/2026-07-17/circular-shift-cipher/cipher.py",
+  "test_command": "python code/2026-07-17/circular-shift-cipher/cipher.py  # 看 V1/V2/V3 判定",
+  "expected_output": "V1 相符=True；V2 全部 round-trip 通過=True；V3 取回 (1,5)≠(0,15)=False（確認缺陷）",
+  "verified_on_this_machine": true,
+  "related_notes": [
+    "wiki/experiments/circular-shift-cipher-verification.md",
+    "wiki/sources/crypto-circular-shift-cipher-paper.md",
+    "wiki/concepts/circular-shift-symmetric-cipher.md"
+  ],
+  "status": "verified"
+}

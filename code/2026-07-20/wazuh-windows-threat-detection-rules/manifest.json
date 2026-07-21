@@ -1,0 +1,21 @@
+{
+  "id": "code-wazuh-windows-threat-detection-rules",
+  "title": "Wazuh Windows／Sysmon 威脅偵測規則包",
+  "created": "2026-07-20",
+  "topic": "Windows 靶機的下載、bind shell、帳號建立與提權偵測",
+  "purpose": "提供 Wazuh 4.14.x 可部署的 custom rule、低噪音 Sysmon baseline 與採集設定",
+  "hypothesis": "把命令嘗試與 Windows 成功稽核事件分層，可在可控誤報下偵測指定行為",
+  "entrypoint": "code/2026-07-20/wazuh-windows-threat-detection-rules/windows-threat-detection-rules.xml",
+  "run_command": "sudo cp windows-threat-detection-rules.xml /var/ossec/etc/rules/110100-windows-threat-detection-rules.xml",
+  "test_command": "sudo /var/ossec/bin/wazuh-analysisd -t",
+  "expected_output": "XML loads without rule ID, regex, or syntax errors; live lab events trigger IDs 110100-110144 as documented",
+  "verified_on_this_machine": false,
+  "related_notes": [
+    "wiki/experiments/wazuh-windows-threat-detection-rules.md",
+    "projects/wazuh-ad-soc/06-detection-logic/correlation-rules.md",
+    "projects/wazuh-ad-soc/04-windows-ad-events/user-creation.md",
+    "projects/wazuh-ad-soc/04-windows-ad-events/admin-group-change.md"
+  ],
+  "status": "xml-validated-needs-wazuh-test"
+}
+

@@ -25,12 +25,19 @@
 ## Sources（來源）
 
 - [[dll-ms-learn]] — Microsoft Learn 的 DLL 技術支援文件：DLL 運作機制、依賴問題（「DLL Hell」），以及作為其後繼方案的 .NET assembly 模型。
-- [[malware-dynamic-analysis]] — 惡意程式動態分析實戰筆記 Part 1：安全 VM 分析環境建置、Process Explorer 觀察程序與 DLL 異常、Process Monitor 側錄系統行為。
+- [[malware-dynamic-analysis]] — 惡意程式動態分析 Lab 2–7：安全 VM、ProcExp／Procmon、Sysmon、DLL Sideloading 與 Process Hollowing 的證據鏈判讀。
 - [[git-github-complete-notes]] — Git 與 GitHub 最完整使用筆記：40 章手冊，涵蓋核心模型、日常指令、分支協作、GitHub 平台功能、CI/CD、安全治理、疑難排解。
 - [[malware-static-dynamic-analysis-notes]] — 惡意程式靜態＋動態分析實戰筆記：PE 靜態分析、動態行為分析、Persistence、Injection、家族行為模式、Sysmon、IOC/TTP/MITRE、報告模板。
 - [[adcs-lab-focus-architecture]] — MOND.local AD DC/AD CS 的設計聚焦圖與待驗證欄位。
 - [[adcs-lab-focus-research]] — AD CS 稽核、Server 2019 AD DS 功能等級、Wazuh/OPNsense/Windows 版本研究。
 - [[ai-security-tools-research-2026-07-16]] — 七項 AI 資安工具的官方文件與研究批次；標示產品世代、用途、風險與專題整合邊界。
+- [[crypto-circular-shift-cipher-paper]] — Masud et al. 2022：循環位元移位對稱密碼；本 wiki 實測可逆但揭露 spec 缺陷。
+- [[quantum-crypto-hybrid-xor-paper]] — Arulmurugan et al. 2025：量子/後量子綜述 + 名實有落差的 hybrid XOR 框架；數字多為未佐證宣稱。
+- [[sysinternals-tool-research-2026-07-16]] — Process Explorer 與 Process Monitor 的官方功能、版本與 Windows 支援範圍研究。
+- [[opnsense-reflection-hairpin-nat]] — OPNsense 官方 Reflection／Hairpin NAT 操作指南摘要、規則模型與除錯證據。
+- [[range-main]] — `locrian` detection range 規格：control/data plane、分階段建置、ground truth、重放與四態評分；目前為 Phase 0 skeleton。
+- [[threat-hunting-course-midterm-report]] — Wazuh、OPNsense／Suricata、Sysmon、Windows Audit 與初期 MCP 的課程實作；展示管線但缺完整回歸證據。
+- [[threat-hunting-course-final-report]] — OPNsense Agent、Suricata Alert／Drop、MCP hard gating 與 ET-BERT 實驗；模型成效仍需量化驗證。
 
 ## Entities（實體）
 
@@ -48,6 +55,14 @@
 - [[lakera-guard]] — Check Point AI Guardrails 的 runtime screening API，可防護 LLM、RAG、agent 與 tool 互動。
 
 ## Concepts（概念）
+
+### OPNsense 與網路邊界
+
+- [[nat-reflection-and-hairpin-nat]] — 依用戶端／伺服器是否同網段，判斷一般路由、Port Forward、Reflection DNAT 或 Hairpin DNAT + SNAT。
+
+### 威脅獵捕與偵測驗證
+
+- [[detection-validation-range]] — 以 run manifest、PCAP／EVTX、operator timeline、重放與四態 scorecard 建立可回歸的偵測驗證靶場。
 
 ### AD CS 與防禦偵測
 
@@ -94,11 +109,21 @@
 
 - [[ai-security-tool-selection]] — 將滲透測試、SAST、SOC 助理、LLM 紅隊與 runtime guardrail 放入不同控制點的選型與專題整合順序。
 
+### 密碼學
+
+- [[circular-shift-symmetric-cipher]] — 金鑰驅動的可逆位元移位對稱密碼；含實測結論與「可逆≠安全」的批判。
+- [[post-quantum-cryptography]] — 量子威脅（Shor/Grover）、PQC（Kyber/NIST FIPS 203）、QKD（BB84/E91）與 hybrid 遷移。
+
 ## Experiments（實驗）
 
 - [[git-reset-modes]] — 實測 git reset --soft/--mixed/--hard 對 Commit/Staging/Working Tree 的影響；假設 supported，信心 High。
 - [[adcs-lab-focus-review]] — MOND.local AD CS 偵測 lab 的 H-I-V-R-K-C 設計與待實機驗證清單。
+- [[circular-shift-cipher-verification]] — 首個本機 Python 實測實驗：驗證 Masud 2022 密碼；round-trip 可逆但揭露金鑰表示缺陷，result partial。
+- [[threat-hunting-range-evolution-review]] — H-I-V-R-K-C：驗證課程展示能否演進為可重放靶場；方法獲支持，實作與效能證據仍為 partial。
+- [[wazuh-windows-threat-detection-rules]] — H-I-V-R-K-C：18 條 Windows／Sysmon custom rule 與低噪音 telemetry baseline；XML 已驗證，Manager 實機載入與命中待完成。
 
 ## Synthesis（綜合分析）
 
 - [[ai-security-tool-selection]] — 七項 AI 資安工具的角色比較、採用順序與 Wazuh × AD × AI 專題整合邊界。
+- [[wiki-content-strengthening-audit-2026-07-16]] — 全專案文件盤點、短頁分類、工具頁補強順序與目前可用驗證邊界。
+- [[threat-hunting-course-to-detection-range-evolution]] — 將期中／期末的 telemetry 與 AI 實作，整合為 ground-truth、重放與 regression 導向的偵測驗證方法。

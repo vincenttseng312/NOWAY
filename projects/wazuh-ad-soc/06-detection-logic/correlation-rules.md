@@ -13,9 +13,9 @@ windows_event_ids: []
 risk_level: ""
 confidence: medium
 verification_status: env-specific
-source_refs: ["Wazuh 官方文件", "MITRE ATT&CK 官方網站"]
+source_refs: ["Wazuh 官方文件", "Microsoft Sysmon 官方文件", "Microsoft Windows Security Auditing 文件", "MITRE ATT&CK 官方網站"]
 keywords: ["關聯規則", "correlation", "行為型樣", "時間窗", "attack chain", "detection"]
-last_updated: 2026-07-09
+last_updated: 2026-07-20
 ---
 
 # 關聯偵測規則
@@ -48,10 +48,22 @@ last_updated: 2026-07-09
 - 涉及：[[evt-account-anomaly-detection]]。
 - 情境：[[scn-ad-abnormal-logon]]、[[scn-lateral-movement-signs]]。
 
+## C6 Bind shell 證據鏈
+
+- 觸發：listener 命令／Script Block → Sysmon Event 3 `Initiated=false` 入站連線 → listener 建立 `cmd.exe`／PowerShell child。
+- 規則：110110／110111（嘗試）、110112（接受入站）、110113／110114（shell child）。
+- 判定：單一 listener 或 Event 3 只能標疑似；ProcessGuid／父子程序、來源 IP、時間與 PCAP 相符時才升為高可信。
+- 前提：Sysmon Event ID 3 預設停用，需套用經審查的 NetworkConnect filter。
+
+## 第一批實作資產（2026-07-20）
+
+`code/2026-07-20/wazuh-windows-threat-detection-rules/` 保存 18 條 custom rule、Sysmon baseline、Agent 通道片段、manifest 與部署／回復 README。靜態 XML 已驗證；Manager 載入、規則命中與誤報 baseline 尚待實機完成，見父層 [[wazuh-windows-threat-detection-rules]]。
+
 ## 實作歸屬與注意
 - 關聯可由 Wazuh 關聯規則或後端 AI 完成（依環境，需確認）。
 - 門檻設太緊會漏、太鬆會吵；需以實際資料調校並記錄（呼應父層 [[ioc-ttp-and-detection-engineering]]）。
 - AI 使用這些型樣時，仍要用實際欄位驗證「同一性」（同帳號/同來源/時間合理），不可只憑型樣名下結論。
+- 4720 的新帳號 SID 與 4732 的 member SID 位於不同欄位；在未做欄位正規化前，不以單純時間接近宣稱是同一帳號。
 
 ## 相關文件
 [[doc-detection-logic-overview]]、以及上列各情境與事件頁。

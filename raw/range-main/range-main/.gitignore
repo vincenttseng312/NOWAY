@@ -1,0 +1,28 @@
+# ground-truth 母帶——絕不進 git（走物件儲存/NAS，見 README）
+*.pcap
+*.pcapng
+*.evtx
+*.cap
+
+# secrets / 憑證 / 金鑰
+*.pem
+*.key
+secrets.yml
+vault-password*
+*.env
+.env
+
+# Ludus / Ansible 執行產物
+*.retry
+ansible.log
+.vault_pass
+
+# OPNsense config 匯出裡可能含機敏——手動審過再解除下面這行
+# opnsense/config/*.xml
+
+# 一般雜物
+.DS_Store
+*.swp
+*.tmp
+__pycache__/
+*.pyc

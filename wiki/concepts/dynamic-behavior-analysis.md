@@ -2,9 +2,9 @@
 type: concept
 title: "動態行為分析（程序／檔案／Registry／網路）"
 tags: [malware-analysis, dfir]
-sources: [malware-static-dynamic-analysis-notes]
+sources: [malware-static-dynamic-analysis-notes, malware-dynamic-analysis]
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-17
 ---
 
 # 動態行為分析
@@ -28,6 +28,17 @@ updated: 2026-07-09
 **Command Line 比 Process Name 更重要**：同樣是 `powershell.exe`，`-NoP -W Hidden -EncodedCommand <base64>` 風險遠高於單純 `powershell.exe`。判讀原則：Process Name 告訴你「誰」、Command Line 告訴你「它想做什麼」、Parent Process 告訴你「它為什麼出現」。
 
 偽裝系統程序名稱（`svhost.exe` vs `svchost.exe`、`explore.exe` vs `explorer.exe`）——真正要看的是 Image Path + Signer + Parent + Command Line + Hash 的組合，而非單看名稱是否眼熟。
+
+## 證據強度分級
+
+| 強度 | 例子 | 用法 |
+|---|---|---|
+| 弱 | 單一父子程序偏差、單一 DLL 名稱、UI 顏色 | 只建立假設，不定性 |
+| 中 | 異常完整路徑、未簽章模組、可疑命令列、偏離乾淨快照基線 | 擴大蒐證並尋找同時段事件 |
+| 強 | 程序鏈 + DLL 路徑／雜湊 + 實際網路／檔案行為，或跨程序記憶體與 thread 證據 | 組成可重現的行為證據鏈 |
+
+> [!TIP]
+> 分析報告應把「觀察到的事實」、「可能解釋」與「已排除的替代解釋」分開寫。這能避免把 `ws2_32.dll`、`WINWORD -> powershell` 或單一 Sysmon Event ID 直接等同惡意行為。
 
 ## 檔案系統行為分析
 

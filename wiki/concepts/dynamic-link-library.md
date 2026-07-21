@@ -2,9 +2,9 @@
 type: concept
 title: "動態連結程式庫（Dynamic Link Library, DLL）"
 tags: [windows, dll]
-sources: [dll-ms-learn]
+sources: [dll-ms-learn, malware-dynamic-analysis]
 created: 2026-07-08
-updated: 2026-07-08
+updated: 2026-07-17
 ---
 
 # 動態連結程式庫（Dynamic Link Library, DLL）
@@ -40,7 +40,23 @@ DLL 匯出函式有兩種機制：
 
 ## DLL 搜尋順序
 
-在依名稱解析 DLL 時，Windows 會依序搜尋：應用程式所在資料夾 → 目前工作目錄 → Windows 系統資料夾（`GetSystemDirectory`）→ Windows 資料夾（`GetWindowsDirectory`）。
+DLL 搜尋順序不是永遠固定的短清單。對未封裝應用程式而言，當程式未提供完整路徑時，Windows 會先處理 DLL redirection、API sets、SxS manifest、已載入模組與 KnownDLLs；Windows 11 21H2 之後還可能納入 package dependency graph。之後才依應用程式目錄、系統目錄、Windows 目錄、目前工作目錄與 `PATH` 等位置搜尋。
+
+Safe DLL Search Mode 預設啟用，會把目前工作目錄移到較後面，但不會把它完全移除。`LoadLibraryEx` 的 `LOAD_LIBRARY_SEARCH_*` flags、`SetDefaultDllDirectories`、`AddDllDirectory` 與 `SetDllDirectory` 都可能改變實際搜尋集合與順序。正式判讀應以應用程式類型、Windows build、API 參數與程序設定為準。官方順序見 [Microsoft Learn：Dynamic-link library search order](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order)。
+
+## DLL Sideloading／Preloading
+
+當攻擊者能寫入 DLL 搜尋路徑中較早被檢查的位置，就可能放入同名惡意 DLL，使合法程式載入錯誤模組。常見情境是合法、已簽章 EXE 與惡意 DLL 放在同一個使用者可寫目錄；EXE 簽章只證明 EXE 本身，不會自動信任旁邊的 DLL。
+
+防禦與偵測重點：
+
+- 開發端盡量使用 DLL 完整路徑與 `LOAD_LIBRARY_SEARCH_*` 安全旗標，並限制可寫目錄。
+- 藍隊比對 EXE 與 DLL 的完整路徑、簽章、雜湊、版本與已知乾淨基線。
+- 以 Sysmon EID 1 + 7 關聯啟動來源與模組載入，再以 EID 3／11／13 或 EDR 遙測確認後續行為，見 [[windows-event-log-and-sysmon]]。
+- 不應把「合法程式 + 未簽章 DLL」單獨定性；開源外掛、舊版軟體與開發環境也可能形成相似外觀。
+
+> [!NOTE]
+> Python 3.8+ 的 `ctypes` 在 Windows 增加 `winmode`，省略時採用較安全的 DLL 載入旗標；傳入 DLL 完整路徑仍是最安全的方式。這項變更只描述 Python `ctypes`，不能推論 Windows 全域已阻斷 CWD 或其他 DLL Sideloading。參考 [Python ctypes 文件](https://docs.python.org/3/library/ctypes.html)。
 
 ## 疑難排解工具
 
@@ -50,7 +66,7 @@ DLL 匯出函式有兩種機制：
 
 ## 在惡意程式分析中的應用
 
-DLL 的載入清單也是動態惡意程式分析中常用的判讀依據：`ntdll.dll` 幾乎任何程式都會載入、不具判斷力，但若一個本身不具備網路功能的程式（例如 `notepad.exe`）底層卻載入了 `ws2_32.dll`／`wininet.dll` 這類網路通訊 DLL，這種功能與載入模組的矛盾，是 [[process-hollowing]]（進程掏空）的典型訊號，可用 [[process-explorer]] 觀察到。詳見 [[malware-dynamic-analysis]]。
+DLL 載入清單是建立調查假設的材料：`ntdll.dll` 幾乎任何程序都會載入；`ws2_32.dll`／`wininet.dll` 與網路功能相關，但可能由合法元件或相依模組間接載入。若 `notepad.exe` 等程序出現不符合基線的網路 DLL，應再確認模組路徑／簽章、實際網路連線、跨程序存取與記憶體映像。這是弱至中等強度的異常訊號，不能單獨證明 [[process-hollowing]]。可先用 [[process-explorer]] 建立假設，再以 [[windows-event-log-and-sysmon]] 與 EDR／記憶體工具驗證。詳見 [[malware-dynamic-analysis]]。
 
 ## 與其他頁面的關聯
 

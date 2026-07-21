@@ -4,7 +4,7 @@ title: "進程掏空（Process Hollowing）"
 tags: [malware-analysis, dfir, windows]
 sources: [malware-dynamic-analysis, malware-static-dynamic-analysis-notes]
 created: 2026-07-08
-updated: 2026-07-09
+updated: 2026-07-17
 ---
 
 # 進程掏空（Process Hollowing）
@@ -25,18 +25,21 @@ ReadProcessMemory     CreateRemoteThread    QueueUserAPC
 SetThreadContext      ResumeThread          NtMapViewOfSection
 ```
 
-## Process Hollowing 概念流程
+## Process Hollowing 概念流程與常見 API
 
 ```text
-1. 建立一個看似正常的程序，通常是 suspended state
-2. 移除或覆蓋原本記憶體映像
-3. 放入惡意 payload
-4. 修改執行緒 context
-5. resume thread
-6. 外觀看起來是合法程序，實際跑的是另一段程式碼
+1. CreateProcess + CREATE_SUSPENDED：建立暫停狀態的合法程序
+2. NtUnmapViewOfSection / ZwUnmapViewOfSection：移除或掏空原映像
+3. VirtualAllocEx：在目標程序配置記憶體
+4. WriteProcessMemory：寫入替代 payload
+5. SetThreadContext：把執行緒 context 指向新進入點
+6. ResumeThread：恢復執行
 ```
 
-分析核心原則：**程序名稱看起來正常，不代表記憶體內容正常**——要比對 disk image、memory image、loaded modules、thread start address、network 行為。
+這是常見分析模型，不是每個樣本都會完整使用相同 API 或順序。不同實作可能覆寫映像而不先 unmap、改用 section mapping，或使用其他執行緒操作。分析核心原則是：**程序名稱與簽章看起來正常，不代表記憶體內容正常**——需比對 disk image、memory image、PE header、thread start address 與後續行為。MITRE ATT&CK 對此技術的定義與程序範例見 [T1055.012 Process Hollowing](https://attack.mitre.org/techniques/T1055/012/)。
+
+> [!WARNING]
+> API 名稱只能形成調查方向。安裝程式、除錯器、EDR 與其他合法軟體也可能使用部分跨程序 API；必須確認目標程序、時間順序、記憶體權限與執行流是否共同符合 Hollowing。
 
 ## Hollowing 可疑證據清單
 
@@ -62,15 +65,15 @@ Injection 更廣義的證據（不限 Hollowing）：A 程序開啟 B 程序 han
 | EDR | cross-process activity、memory injection telemetry |
 | Sysmon | ProcessAccess / CreateRemoteThread 類事件 |
 
-## 如何在動態分析中發現特徵矛盾（DLL 載入訊號）
+## 如何使用 DLL 載入訊號建立假設
 
 依 [[malware-dynamic-analysis]] 的紀錄，判斷是否發生 Process Hollowing 的一個實用線索是「載入的 DLL 與程序本身的正常功能不符」：
 
 - 用 [[process-explorer]] 觀察目標程序底層載入的 DLL 清單。
 - `ntdll.dll` 幾乎任何程式都會載入，不具判斷力。
-- 但如果一個**本身不該有網路功能**的純文字程式（例如 `notepad.exe`）底層卻載入了 `ws2_32.dll` 或 `wininet.dll`（這兩者是掌管網路通訊的系統 [[dynamic-link-library|DLL]]），這種「功能與載入模組不匹配」的矛盾，就是該程序已被惡意代碼注入、正在進行 C2 連線或資料外洩的高機率訊號。
+- 如果一個**依既有基線不應有網路功能**的程序（例如一般情況下的 `notepad.exe`）載入 `ws2_32.dll` 或 `wininet.dll`，可把「功能與載入模組不匹配」列為待查異常。但 DLL 可能由合法相依元件間接載入，這個現象本身不能證明注入、C2 或資料外洩。
 
-這是一種間接、基於行為觀察的偵測手法，而非直接偵測注入動作本身；配合 [[process-monitor]] 側錄該程序的檔案／登錄檔／網路行為，可以進一步佐證。
+這是一種間接線索，而非注入證據。應進一步確認 DLL 完整路徑、簽章與雜湊，並交叉比對實際網路連線、Sysmon EID 8／10、EDR cross-process telemetry、memory image 與 thread start address；[[process-monitor]] 可補充檔案與 Registry 行為，但不等同記憶體鑑識。
 
 ## 與其他頁面的關聯
 

@@ -46,8 +46,55 @@
 ## [2026-07-16] ingest | AI Security Tools official documentation research batch
    pages: raw/ai-security-tools-research-2026-07-16.md；wiki/sources/ai-security-tools-research-2026-07-16.md；7 entity pages (pentestgpt, burpgpt, microsoft-security-copilot, deepcode-ai, hexstrike-ai, garak, lakera-guard)；wiki/concepts/ai-security-tool-selection.md
    result: 以官方文件、官方 GitHub 與同行研究區分滲透測試 agent、Web AppSec、Microsoft SOC、SAST、LLM 紅隊與 runtime guardrail；BurpGPT Community 已停維護、DeepCode AI 非獨立產品、攻擊自動化工具限已授權隔離環境。
+## [2026-07-16] audit + strengthen | 文件內容強化第一批（進行中）
+   pages: wiki/synthesis/wiki-content-strengthening-audit-2026-07-16.md (new); wiki/entities/deepcode-ai.md、wiki/entities/garak.md、wiki/entities/lakera-guard.md、wiki/entities/burpgpt.md、wiki/entities/microsoft-security-copilot.md (expanded)
+   result: 盤點 55 個父層 wiki 頁與 137 個 Wazuh 專題文件；補入 Windows 前置檢查、可驗證快速開始、設定/金鑰管理、排錯與工具比較。Python/API 實測未宣稱完成。
+## [2026-07-16] ingest + strengthen | Sysinternals 官方研究與工具頁補強
+   pages: raw/sysinternals-tool-research-2026-07-16.md；wiki/sources/sysinternals-tool-research-2026-07-16.md；wiki/entities/process-explorer.md、wiki/entities/process-monitor.md (expanded)
+   result: 補入官方支援矩陣、Windows 下載驗證、GUI 快速開始、filter/PML 證據保存與排錯；Process Explorer 最新官方頁僅列 Windows 11+，Windows 10 lab 須自行驗證相容性。
+## [2026-07-16] strengthen | PentestGPT 與 HexStrike AI 工具治理補強
+   pages: wiki/entities/pentestgpt.md、wiki/entities/hexstrike-ai.md (expanded); raw/ai-security-tools-research-2026-07-16.md (updated)
+   result: 補入 Docker/Python 前置檢查、隔離/allowlist/人工停止點、MCP agent 控制流與常見排錯；未提供對任何目標執行掃描或利用的操作指令。
+## [2026-07-16] lint | 文件內容強化批次手動驗證
+   checked: 11 個新增或擴寫頁面；frontmatter 0 failures、wikilink 0 broken、oversized 0、索引缺漏 0；兩份 research raw 均存在。
+   limitation: 專案未發現 package.json、pyproject.toml 或文件網站設定，且本機無可用 Python；未執行建置、Markdown lint 或第三方工具實機測試。
 ## [2026-07-16] lint | 資料庫大保養（手動全庫掃描 wiki + projects/wazuh-ad-soc）
    斷鏈：修 20 條前綴/命名不一致（doc-→dsh- ×17、doc-windows-security-event-overview→evt-windows-security-overview、evt-ad-abnormal-logon→scn-ad-abnormal-logon、rpt-full-report→qa-full-report），跨 11 檔；連帶消除 4 個假孤兒。最終 0 斷鏈。
    版本：依使用者裁決將 Server 版本統一為 2019（規劃期，可能再調；raw 保留草稿值 2022/2025 作 ground truth）。修正 version-sed 誤壓的 1 處功能等級事實（adcs-environment：Server 2019 無專屬功能等級，最高採 Windows Server 2016 FFL/DFL）。log 歷史條目維持原值不改。
    其餘：0 重複 id、0 超大頁（皆 <350 行）、Jul15 adcs 與 Jul16 AI 工具頁均已收錄、db 三檔一致。誤報排除 [[slug]]/[[wikilink]]/[[wikilinks]]（模板文字範例）。
    cadence 訊號：專案（projects/）應每完成一個 batch 就跑一次「專案內」lint，勿只掃 wiki/——本次 20 條斷鏈皆為只掃 wiki 時漏掉的專案內部積累。
+## [2026-07-17] ingest + experiment | 兩篇密碼學論文（循環移位對稱密碼、量子/後量子密碼）
+   pages: wiki/sources/crypto-circular-shift-cipher-paper.md、wiki/sources/quantum-crypto-hybrid-xor-paper.md（new）; wiki/concepts/circular-shift-symmetric-cipher.md、wiki/concepts/post-quantum-cryptography.md（new）; wiki/experiments/circular-shift-cipher-verification.md（new）; code/2026-07-17/circular-shift-cipher/（cipher.py+README+manifest）
+   result: 首個本機 Python(3.12.10) 實測實驗。論文一密碼 round-trip 可逆、金鑰生成重現 Table I（supported），但揭露金鑰整數表示對低 nibble≥10 失真 + Table I 表頭 typo（partial）。論文二「量子」多為綜述/future work，實作僅古典 XOR；其統計數字一律標「宣稱、未佐證」。紀律：可逆≠安全。
+## [2026-07-17] ingest | OPNsense Reflection and Hairpin NAT 官方文件
+   pages: raw/opnsense-reflection-hairpin-nat.md（new）；wiki/sources/opnsense-reflection-hairpin-nat.md（new）；wiki/concepts/nat-reflection-and-hairpin-nat.md（new）；wiki/concepts/soc-lab-segmentation-and-telemetry.md、wiki/SCHEMA.md、wiki/index.md（updated）
+   result: 區分一般路由／Port Forward、Reflection DNAT 與同網段 Hairpin DNAT + SNAT；納入單一 Attacker VPN + `.40` 觀測網架構判斷，並保留 NAT 非安全控制、手動可稽核規則與除錯證據。
+## [2026-07-17] ingest | 惡意程式動態分析實戰筆記增量（Lab 5–7）
+   pages: wiki/sources/malware-dynamic-analysis.md；wiki/concepts/windows-event-log-and-sysmon.md、dynamic-link-library.md、process-hollowing.md、dynamic-behavior-analysis.md、malware-analysis-vm-setup.md；wiki/entities/process-explorer.md；wiki/SCHEMA.md、wiki/index.md（updated）；new pages: 0
+   result: 整合 Sysmon EID 1/7、DLL Sideloading 與 Process Hollowing；以官方文件校正 DLL 搜尋順序、Python ctypes 與 MITRE 行為鏈，並把單一父子程序／DLL 訊號降為待驗證假設。標題與 callout 顏色規則已正式化。
+## [2026-07-20] ingest | locrian 實作規格（build-of-record）
+   pages: wiki/sources/range-main.md、wiki/concepts/detection-validation-range.md、wiki/synthesis/threat-hunting-course-to-detection-range-evolution.md（new）；wiki/concepts/soc-lab-segmentation-and-telemetry.md、ioc-ttp-and-detection-engineering.md（updated）
+   result: 將 detection range 的 control/data plane、ground truth、artifact 保存、重放與 None/Telemetry/Failed/Success 四態評分納入 KB；repository 多數實作目錄仍為 skeleton，未宣稱已部署。
+## [2026-07-20] ingest | Threat Hunting Essential: Attack Recognition Techniques
+   pages: wiki/sources/threat-hunting-course-midterm-report.md（new）；wiki/concepts/windows-event-log-and-sysmon.md、soc-lab-segmentation-and-telemetry.md（updated）
+   result: 保留 Wazuh、OPNsense/Suricata、Sysmon、Windows Audit 與初期 MCP 的實作證據；截圖與環境特定 rule.id 不升格為可重現或通用結論。
+## [2026-07-20] ingest | Threat Hunting Essential: Attack Recognition Techniques Part 2
+   pages: wiki/sources/threat-hunting-course-final-report.md（new）；wiki/concepts/ioc-ttp-and-detection-engineering.md、projects/wazuh-ad-soc/（4 pages updated）
+   result: 整合 OPNsense Agent、Alert/Drop、MCP hard gating 與 ET-BERT 實驗；模型比較與分類效能因缺固定測試集、F1/confusion matrix/leakage 檢查而標為待驗證，敏感 credential 未轉錄。
+## [2026-07-20] experiment | threat-hunting-range-evolution-review
+   hypothesis: 把期中／期末的單次展示重新編譯成 ground truth、重放與四態評分，可形成更可重現的偵測驗證方法。
+   result: partial / medium confidence；文件與視覺驗證完成，但 range-main 尚未完整實作，MCP、ET-BERT 與自動 scorecard 均缺足夠實機證據；code_paths 為空。
+## [2026-07-20] lint | range-main + Threat Hunting Essential 批次 ingest 後檢查
+   checked: 主 Wiki 67 頁、Wazuh 子專案合計 207 個 Markdown；跨庫 338 個可解析目標、0 失效 wikilink；本次 6 個新頁 0 孤兒、0 frontmatter 缺漏、0 超大頁；experiments.jsonl 與 learning_log.jsonl 各 5 筆且全數可解析。
+   known debt: 內建 wiki_lint 不解析 projects/，因此回報的 20 條跨庫連結已由跨庫掃描確認均有效；另有 4 個舊 experiment 缺 title/tags、5 個舊 source 缺 created/updated，皆為本批前既存 schema 債務，未在本次來源 ingest 擴大修改。
+## [2026-07-20] experiment | Wazuh Windows／Sysmon 威脅偵測規則包
+   code: code/2026-07-20/wazuh-windows-threat-detection-rules/（18 rules、Sysmon baseline、agent.conf snippet、README、manifest）；custom IDs 110100–110144。
+   result: partial / medium confidence；3 個 XML 可解析、18 個 ID 唯一、manifest JSON 有效；Wazuh 4.14.6 `wazuh-analysisd -t`、live event 命中與一週誤報 baseline 待在實機完成，未啟用 Active Response。
+## [2026-07-20] lint | Wazuh Windows／Sysmon 規則包 post-change
+   checked: 27 個 PCRE2 型式 0 compile error、兩個 JSONL 0 parse error；主 Wiki 68 頁且本次新頁 0 孤兒／0 frontmatter 缺漏；主 Wiki + Wazuh 子專案共 208 個 Markdown、340 個可解析目標、0 跨庫失效連結。
+   limitation: Wazuh XML 語意與 EventChannel 實際欄位只能由 Manager `wazuh-analysisd -t` 及 live-event 驗證；內建 wiki_lint 的 20 條跨庫誤報與 9 個舊頁 schema 債務維持既有紀錄。
+## [2026-07-21] lint | 結構性大保養（全庫 wiki + projects，Python 腳本掃描）
+   範圍：230 個 .md。斷鏈 0 真問題（[[連結]] 為 CLAUDE.md 說明文字）、超大頁 0、wiki 未索引 0、重複 id 0、db 三檔+concepts 全解析且 0 失效參照路徑。projects 26「孤兒」判為誤報（20 筆為專案頁以 markdown 連結掛 index.md 的導覽設計，非 [[ ]]）。
+   清理：刪除庫根 14 個 Obsidian 殘骸——8 個 0-byte id 空 stub（doc-data-and-event-flow/doc-mitre-distribution/doc-scope-and-limitations/doc-wazuh-dashboard/doc-wazuh-field-to-ai-mapping/doc-wazuh-manager/doc-windows-events-into-wazuh/evt-ad-security-overview，真頁皆在 projects/）、未命名.md、experiments/....md（含空夾）、image1/2/3.md（貼圖 base64）。刪前確認 7 個 stub 之 id 均與真頁相符、doc-mitre-distribution 無人連結，刪除不暴露任何斷鏈。重跑後庫根僅剩 CLAUDE.md/changelog.md。
+   根因與對策：Obsidian 以檔名（非 frontmatter id）解析連結，故 [[doc-xxx]] id 連結會在庫根自動生成空 stub，會週期再生；已於 CLAUDE.md §11 記錄清理 SOP（find -maxdepth 1 -size 0）。
+   note：07-20 由平行 Codex agent 完成的 range-main／威脅獵捕期中期末報告 ingest（7 wiki 頁 + code/2026-07-20/）本次一併納入掃描，結構一致、無斷鏈。

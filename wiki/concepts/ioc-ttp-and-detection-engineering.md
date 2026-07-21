@@ -2,9 +2,9 @@
 type: concept
 title: "IOC、TTP、MITRE ATT&CK 與 Detection Engineering"
 tags: [malware-analysis, dfir]
-sources: [malware-static-dynamic-analysis-notes]
+sources: [malware-static-dynamic-analysis-notes, range-main, threat-hunting-course-final-report]
 created: 2026-07-09
-updated: 2026-07-09
+updated: 2026-07-20
 ---
 
 # IOC、TTP、MITRE ATT&CK 與 Detection Engineering
@@ -66,6 +66,19 @@ IOC 表格模板分 File / Network / Host Indicators 三類，各含 Type/Value/
 
 這正是把 [[dynamic-behavior-analysis]] 中觀察到的程序鏈、網路、檔案、Registry 證據串成單一偵測邏輯的具體實作方式。
 
+## 偵測規則的四態驗證
+
+規則有沒有命中不能只用 pass/fail 表示。依 [[detection-validation-range]]，每個預期 forensic signal 應按證據分成：
+
+| 狀態 | 判斷依據 | 工程含義 |
+|---|---|---|
+| `None` | 原始 sensor 資料不存在 | 先修 telemetry，不應先改規則 |
+| `Telemetry` | 原始事件存在，但沒有規則／告警 | 建立 parser、field mapping 或偵測邏輯 |
+| `Failed` | 規則存在，但對 ground truth 未命中 | 檢查條件、欄位版本、門檻與 TTP 變體 |
+| `Success` | 命中且能追溯至 ground truth | 納入 regression corpus，持續檢查誤報與退化 |
+
+每次規則更新都應對固定的 PCAP／EVTX／解析後事件 corpus 重放，並記錄規則 hash、sensor 版本、預期訊號與結果差異。這才是 detection regression；單一 dashboard 截圖只能證明某次曾命中。
+
 ## Sigma Rule 概念模板
 
 ```yaml
@@ -95,4 +108,4 @@ level: high
 
 ## 與其他頁面的關聯
 
-IOC/TTP 的分析思維基礎見 [[malware-analysis-methodology]]；具體行為模式與其 Technique 對應見 [[malware-behavior-patterns]] 與 [[persistence-mechanisms]]；本頁內容是撰寫 [[malware-analysis-report-template]] 中 IOC 與 Detection Opportunities 章節的直接依據。
+IOC/TTP 的分析思維基礎見 [[malware-analysis-methodology]]；具體行為模式與其 Technique 對應見 [[malware-behavior-patterns]] 與 [[persistence-mechanisms]]；本頁內容是撰寫 [[malware-analysis-report-template]] 中 IOC 與 Detection Opportunities 章節的直接依據；可重放驗證與 scorecard 見 [[detection-validation-range]]。

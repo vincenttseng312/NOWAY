@@ -1,0 +1,55 @@
+<!-- Focused lab baseline: broad ProcessCreate, targeted Network/DNS, and user-writable FileCreate. -->
+<Sysmon schemaversion="4.82">
+  <HashAlgorithms>SHA256</HashAlgorithms>
+  <CheckRevocation>true</CheckRevocation>
+  <DnsLookup>true</DnsLookup>
+
+  <EventFiltering>
+    <!-- Empty exclude list means log all process creation events. -->
+    <ProcessCreate onmatch="exclude" />
+
+    <!-- Event ID 3 is disabled by Sysmon's default installation. Limit it to useful lab processes/paths. -->
+    <NetworkConnect onmatch="include">
+      <Image condition="end with">\powershell.exe</Image>
+      <Image condition="end with">\pwsh.exe</Image>
+      <Image condition="end with">\cmd.exe</Image>
+      <Image condition="end with">\curl.exe</Image>
+      <Image condition="end with">\certutil.exe</Image>
+      <Image condition="end with">\bitsadmin.exe</Image>
+      <Image condition="end with">\mshta.exe</Image>
+      <Image condition="end with">\rundll32.exe</Image>
+      <Image condition="end with">\regsvr32.exe</Image>
+      <Image condition="end with">\nc.exe</Image>
+      <Image condition="end with">\ncat.exe</Image>
+      <Image condition="end with">\socat.exe</Image>
+      <Image condition="end with">\python.exe</Image>
+      <Image condition="end with">\pythonw.exe</Image>
+      <Image condition="contains">\Users\Public\</Image>
+      <Image condition="contains">\AppData\Local\Temp\</Image>
+      <Image condition="contains">\Downloads\</Image>
+    </NetworkConnect>
+
+    <FileCreate onmatch="include">
+      <TargetFilename condition="contains any">\Downloads\;\AppData\Local\Temp\;\Windows\Temp\;\Users\Public\</TargetFilename>
+    </FileCreate>
+
+    <DnsQuery onmatch="include">
+      <Image condition="end with">\powershell.exe</Image>
+      <Image condition="end with">\pwsh.exe</Image>
+      <Image condition="end with">\curl.exe</Image>
+      <Image condition="end with">\certutil.exe</Image>
+      <Image condition="end with">\bitsadmin.exe</Image>
+      <Image condition="end with">\mshta.exe</Image>
+      <Image condition="end with">\rundll32.exe</Image>
+      <Image condition="end with">\regsvr32.exe</Image>
+      <Image condition="end with">\nc.exe</Image>
+      <Image condition="end with">\ncat.exe</Image>
+      <Image condition="end with">\socat.exe</Image>
+      <Image condition="end with">\python.exe</Image>
+    </DnsQuery>
+
+    <!-- Low-volume, high-value event. -->
+    <ProcessTampering onmatch="exclude" />
+  </EventFiltering>
+</Sysmon>
+

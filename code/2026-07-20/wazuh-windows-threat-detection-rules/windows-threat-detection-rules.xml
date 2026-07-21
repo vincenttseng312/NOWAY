@@ -1,0 +1,176 @@
+<!--
+  Wazuh 4.14.x custom Windows/Sysmon rules for an authorized lab.
+  Custom ID block: 110100-110199. Check for local collisions before deployment.
+-->
+<group name="local,windows,lab_detection,">
+
+  <!-- Suspicious download and payload staging -->
+  <rule id="110100" level="7">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:powershell|pwsh|curl|certutil|bitsadmin|mshta|rundll32|regsvr32)\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(?:https?|ftp)://</field>
+    <description>可疑下載嘗試：$(win.eventdata.image) 使用 URL 取得內容</description>
+    <mitre><id>T1105</id></mitre>
+    <group>sysmon,suspicious_download,command_execution,</group>
+  </rule>
+
+  <rule id="110101" level="8">
+    <if_sid>60000</if_sid>
+    <field name="win.system.providerName" type="pcre2">(?i)^Microsoft-Windows-PowerShell$</field>
+    <field name="win.system.eventID">^4104$</field>
+    <field name="win.eventdata.scriptBlockText" type="pcre2">(?i)(Invoke-WebRequest|Invoke-RestMethod|Start-BitsTransfer|DownloadString|DownloadFile|System\.Net\.WebClient|HttpClient)</field>
+    <description>PowerShell Script Block 出現下載功能呼叫</description>
+    <mitre><id>T1105</id><id>T1059.001</id></mitre>
+    <group>powershell,suspicious_download,script_execution,</group>
+  </rule>
+
+  <rule id="110102" level="9">
+    <if_sid>60004</if_sid>
+    <field name="win.system.eventID">^11$</field>
+    <field name="win.eventdata.targetFilename" type="pcre2">(?i)\\(?:Users\\[^\\]+\\(?:Downloads|AppData\\Local\\Temp)|Users\\Public|Windows\\Temp)\\.*\.(?:exe|dll|ps1|bat|cmd|msi|js|vbs)$</field>
+    <description>可執行或腳本檔被寫入使用者可寫目錄：$(win.eventdata.targetFilename)</description>
+    <mitre><id>T1105</id></mitre>
+    <group>sysmon,payload_staging,file_create,</group>
+  </rule>
+
+  <!-- Bind shell indicators: attempt, accepted connection, and shell execution -->
+  <rule id="110110" level="11">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:nc|ncat|socat)\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(?:\s-l(?:\s|$)|--listen|TCP-LISTEN:)</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(?:-e\s+(?:cmd|powershell)|--exec\s+(?:cmd|powershell)|EXEC:(?:cmd|powershell))</field>
+    <description>疑似原生 bind shell listener 啟動：$(win.eventdata.commandLine)</description>
+    <mitre><id>T1059</id></mitre>
+    <group>sysmon,bind_shell,listener,command_and_control,</group>
+  </rule>
+
+  <rule id="110111" level="11">
+    <if_sid>60000</if_sid>
+    <field name="win.system.providerName" type="pcre2">(?i)^Microsoft-Windows-PowerShell$</field>
+    <field name="win.system.eventID">^4104$</field>
+    <field name="win.eventdata.scriptBlockText" type="pcre2">(?i)(TcpListener|Sockets\.TcpListener)</field>
+    <field name="win.eventdata.scriptBlockText" type="pcre2">(?i)(GetStream|AcceptTcpClient|AcceptSocket)</field>
+    <description>疑似 PowerShell TCP listener／bind shell 程式碼</description>
+    <mitre><id>T1059.001</id></mitre>
+    <group>powershell,bind_shell,listener,command_and_control,</group>
+  </rule>
+
+  <rule id="110112" level="12">
+    <if_group>sysmon_event3</if_group>
+    <field name="win.eventdata.initiated" type="pcre2">(?i)^false$</field>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:nc|ncat|socat|powershell|pwsh|python|pythonw)\.exe$</field>
+    <description>疑似可疑 listener 接受入站連線：$(win.eventdata.image) $(win.eventdata.sourceIp):$(win.eventdata.sourcePort) -&gt; $(win.eventdata.destinationPort)</description>
+    <mitre><id>T1059</id></mitre>
+    <group>sysmon,bind_shell,inbound_connection,command_and_control,</group>
+  </rule>
+
+  <rule id="110113" level="14">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:cmd|powershell|pwsh)\.exe$</field>
+    <field name="win.eventdata.parentImage" type="pcre2">(?i)\\(?:nc|ncat|socat)\.exe$</field>
+    <description>高可信 bind shell 跡象：listener 程序建立 shell 子程序</description>
+    <mitre><id>T1059</id></mitre>
+    <group>sysmon,bind_shell,shell_spawned,command_and_control,</group>
+  </rule>
+
+  <rule id="110114" level="13">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:cmd|powershell|pwsh)\.exe$</field>
+    <field name="win.eventdata.parentImage" type="pcre2">(?i)\\(?:powershell|pwsh)\.exe$</field>
+    <field name="win.eventdata.parentCommandLine" type="pcre2">(?i)(TcpListener|AcceptTcpClient|AcceptSocket)</field>
+    <description>高可信 PowerShell bind shell 跡象：TCP listener 建立 shell 子程序</description>
+    <mitre><id>T1059.001</id></mitre>
+    <group>sysmon,bind_shell,shell_spawned,command_and_control,</group>
+  </rule>
+
+  <!-- Account creation and privilege-group modification -->
+  <rule id="110120" level="8">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:net|net1|powershell|pwsh|dsadd)\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(\bnet1?\b.*\buser\b.*(?:/add|-add)\b|New-(?:Local|AD)User\b|\bdsadd\b.*\buser\b)</field>
+    <description>帳號建立命令嘗試：$(win.eventdata.commandLine)</description>
+    <mitre><id>T1136</id></mitre>
+    <group>sysmon,account_creation_attempt,persistence,</group>
+  </rule>
+
+  <rule id="110121" level="10">
+    <if_sid>60001</if_sid>
+    <field name="win.system.eventID">^4720$</field>
+    <description>使用者帳號建立成功：$(win.eventdata.targetDomainName)\\$(win.eventdata.targetUserName)，操作者 $(win.eventdata.subjectUserName)</description>
+    <mitre><id>T1136</id></mitre>
+    <group>account_created_success,windows_security,persistence,</group>
+  </rule>
+
+  <rule id="110130" level="8">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:net|net1|powershell|pwsh|dsmod)\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(\bnet1?\b.*\blocalgroup\b.*(?:/add|-add)\b|Add-LocalGroupMember\b|Add-ADGroupMember\b|\bdsmod\b.*\bgroup\b.*-addmbr\b)</field>
+    <description>安全群組成員新增命令嘗試：$(win.eventdata.commandLine)</description>
+    <mitre><id>T1098</id></mitre>
+    <group>sysmon,privilege_group_change_attempt,privilege_escalation,</group>
+  </rule>
+
+  <rule id="110131" level="13">
+    <if_sid>60001</if_sid>
+    <field name="win.system.eventID">^4732$</field>
+    <field name="win.eventdata.targetSid">^S-1-5-32-544$</field>
+    <description>帳號成功加入本機 Administrators：$(win.eventdata.memberName) [$(win.eventdata.memberSid)]，操作者 $(win.eventdata.subjectUserName)</description>
+    <mitre><id>T1098</id></mitre>
+    <group>administrators_membership_success,windows_security,privilege_escalation,</group>
+  </rule>
+
+  <rule id="110132" level="13">
+    <if_sid>60001</if_sid>
+    <field name="win.system.eventID">^4728$</field>
+    <field name="win.eventdata.targetSid" type="pcre2">-512$</field>
+    <description>帳號成功加入 Domain Admins：$(win.eventdata.memberName) [$(win.eventdata.memberSid)]，操作者 $(win.eventdata.subjectUserName)</description>
+    <mitre><id>T1098</id></mitre>
+    <group>domain_admins_membership_success,windows_security,privilege_escalation,</group>
+  </rule>
+
+  <!-- Additional common behaviors -->
+  <rule id="110140" level="12">
+    <if_sid>60000</if_sid>
+    <field name="win.system.eventID">^(1102|104)$</field>
+    <description>Windows 事件記錄遭清除：Event ID $(win.system.eventID)</description>
+    <mitre><id>T1070.001</id></mitre>
+    <group>log_cleared,defense_evasion,windows_security,</group>
+  </rule>
+
+  <rule id="110141" level="10">
+    <if_sid>60000</if_sid>
+    <field name="win.system.eventID">^(4697|7045)$</field>
+    <description>新服務安裝：$(win.eventdata.serviceName) $(win.eventdata.imagePath)</description>
+    <mitre><id>T1543.003</id></mitre>
+    <group>service_created,persistence,windows_security,</group>
+  </rule>
+
+  <rule id="110142" level="9">
+    <if_sid>60001</if_sid>
+    <field name="win.system.eventID">^4698$</field>
+    <description>排程工作建立：$(win.eventdata.taskName)，操作者 $(win.eventdata.subjectUserName)</description>
+    <mitre><id>T1053.005</id></mitre>
+    <group>scheduled_task_created,persistence,windows_security,</group>
+  </rule>
+
+  <rule id="110143" level="10">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\(?:powershell|pwsh)\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(?:-(?:enc|encodedcommand)\b|FromBase64String\s*\()</field>
+    <description>PowerShell 編碼／Base64 命令：$(win.eventdata.commandLine)</description>
+    <mitre><id>T1059.001</id><id>T1027</id></mitre>
+    <group>powershell,encoded_command,defense_evasion,</group>
+  </rule>
+
+  <rule id="110144" level="12">
+    <if_sid>60000</if_sid>
+    <field name="win.system.providerName" type="pcre2">(?i)^Microsoft-Windows-PowerShell$</field>
+    <field name="win.system.eventID">^4104$</field>
+    <field name="win.eventdata.scriptBlockText" type="pcre2">(?i)(Set-MpPreference.*DisableRealtimeMonitoring|DisableAntiSpyware|Remove-MpPreference|sc(?:\.exe)?\s+(?:stop|config).*WinDefend)</field>
+    <description>疑似停用或削弱 Microsoft Defender 的 PowerShell 行為</description>
+    <mitre><id>T1562.001</id></mitre>
+    <group>powershell,security_tool_disable,defense_evasion,</group>
+  </rule>
+
+</group>
+

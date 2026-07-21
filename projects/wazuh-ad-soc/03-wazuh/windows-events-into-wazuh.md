@@ -10,8 +10,8 @@ related_docs: [doc-wazuh-agent, doc-wazuh-manager, evt-windows-security-overview
 keywords: ["Windows 事件", "eventchannel", "Event Log", "decoder", "data.win", "providerName", "location", "windows events into wazuh"]
 confidence: medium
 verification_status: needs-verification
-source_refs: ["Wazuh 官方文件", "Microsoft Windows Security Auditing 文件"]
-last_updated: 2026-07-09
+source_refs: ["Wazuh 官方文件", "Microsoft Sysmon 官方文件", "Microsoft Windows Security Auditing 文件"]
+last_updated: 2026-07-20
 ---
 
 # Windows 事件如何進入 Wazuh
@@ -45,6 +45,17 @@ rule 比對 → 產生 alert（含 rule.*、rule.mitre.*）
 
 ## 5. 需依實際環境確認
 啟用的稽核政策、採集通道、decoder。
+
+## 6. 目前規則包所需通道
+
+`code/2026-07-20/wazuh-windows-threat-detection-rules/` 需要：
+
+- `Microsoft-Windows-Sysmon/Operational`：Event ID 1、3、11；
+- `Microsoft-Windows-PowerShell/Operational`：Event ID 4104；
+- `Security`：4720、4728、4732、4697、4698、1102；
+- `System`：7045、104。
+
+Sysmon Event ID 3 預設不啟用；Security／PowerShell 事件也取決於 audit policy／GPO。通道重複配置會造成 duplicate events，合併 shared `agent.conf` 前必須先檢查 endpoint 本機 `ossec.conf`。
 
 ## 相關文件
 [[doc-wazuh-agent]]、[[doc-wazuh-manager]]、[[evt-windows-security-overview]]；跨連父層 [[windows-event-log-and-sysmon]]。

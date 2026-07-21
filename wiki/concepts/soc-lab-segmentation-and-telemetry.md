@@ -2,9 +2,9 @@
 type: concept
 title: "SOC 實驗室的網段分割與遙測邊界"
 tags: [wazuh, active-directory, opnsense, network-segmentation, telemetry]
-sources: [wazuh-ad-soc-architecture-diagram, wazuh-ad-soc-architecture-research]
+sources: [wazuh-ad-soc-architecture-diagram, wazuh-ad-soc-architecture-research, opnsense-reflection-hairpin-nat, range-main, threat-hunting-course-midterm-report, threat-hunting-course-final-report]
 created: 2026-07-14
-updated: 2026-07-14
+updated: 2026-07-20
 ---
 
 # SOC 實驗室的網段分割與遙測邊界
@@ -33,8 +33,21 @@ updated: 2026-07-14
 - MCP 存取紀錄可對應到 AI 查詢，並證明它沒有取得未授權的管理控制能力。
 - RDP／WinRM 的測試帳號、來源與時間可以從 AD/Windows 事件和網路日誌交叉對應。
 
+## Control Plane、Data Plane 與錄製邊界
+
+[[range-main]] 進一步把實驗室拆成兩個操作面：control plane 承載部署、管理、規則同步與 AI／API 控制；data plane 承載靶場通訊、端點事件與網路封包。兩者必須有不同的帳號、路徑與 firewall policy，避免取得測試資料面權限的主機同時控制 sensor 或監控平台。
+
+內部分區若能以靜態路由與明確防火牆規則連接，通常比額外 NAT 更容易保存真實來源與對稱路徑；NAT 只留在必要的 Internet 邊界。南北向封包可在 OPNsense／Suricata 錄製，東西向流量則需內部 mirror／sensor。端點 EVTX／Sysmon、PCAP 與 operator timeline 應共享 run ID 與 UTC 時間基準，才能形成 [[detection-validation-range]] 所需的 ground truth，而不只是各自獨立的告警截圖。
+
+## NAT 與分段的界線
+
+NAT 只改寫位址或連接埠，不等於網段隔離、存取授權或 VPN 身分控制。依 [[nat-reflection-and-hairpin-nat]]，不同子網的內部主機若使用外部 IP 存取內部服務，可能需要 Reflection DNAT；相同子網的 Hairpin 情境則需額外 SNAT 維持對稱回程。無論使用何種轉譯，仍須以來源、目的、服務與介面上的防火牆規則限制流量，並保留可供 Wazuh／SOC 關聯的規則命中紀錄。
+
 ## 關聯
 
 - 設計來源：[[wazuh-ad-soc-architecture-diagram]]
 - 官方研究：[[wazuh-ad-soc-architecture-research]]
+- OPNsense NAT 路徑：[[nat-reflection-and-hairpin-nat]]
 - 架構審查閉環：[[wazuh-ad-soc-architecture-review]]
+- 可重放驗證：[[detection-validation-range]]
+- 課程到靶場演進：[[threat-hunting-course-to-detection-range-evolution]]

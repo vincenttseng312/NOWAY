@@ -64,6 +64,15 @@
 - `guardrails` — AI 應用的輸入、輸出與工具使用防護。
 - `mcp` — Model Context Protocol 及其工具整合安全。
 - `soc` — Security Operations Center 的偵測、調查與處置流程。
+- `opnsense` — OPNsense 防火牆、路由、VPN 與相關網路服務。
+- `networking` — IP、路由、子網與封包路徑等網路基礎。
+- `network-segmentation` — VLAN、zone、跨區路由與信任邊界分割。
+- `nat` — Network Address Translation，包括 SNAT、DNAT、PAT 與 NAT reflection。
+- `firewall` — 防火牆規則、stateful filtering、規則順序與流量控制。
+- `cryptography` — 密碼學（加解密、金鑰、協定）主題。
+- `symmetric-cipher` — 對稱密碼（含位移/XOR 類）。
+- `quantum-cryptography` — 量子密碼、QKD（BB84/E91）。
+- `post-quantum` — 後量子密碼（PQC，如格密碼 Kyber/NIST FIPS 203）。
 
 ## 頁面大小限制
 
@@ -160,7 +169,9 @@ changelog.md 結構級里程碑
 
 ## 使用者偏好
 
-（初始為空。當使用者表達風格偏好時 —— 例如「concept 頁一律要有『這件事為什麼重要』段落」、「摘要不要用條列式」、「synthesis 頁優先用比較表格」—— 記錄於此，讓偏好能跨對話保留。）
+- **標題層級**：H1 只用於頁名；H2 用於 Lab／主要主題；H3 用於子主題或步驟群組。標題不加裝飾性 emoji，避免索引與不同 Markdown renderer 呈現不一致。
+- **語意顏色**：不寫死 HTML 色碼，統一使用 Obsidian callout：`[!NOTE]` 表示概念或補充、`[!TIP]` 表示操作建議、`[!WARNING]` 表示安全或誤判風險。正文仍須寫出語意，不可只靠顏色傳達。
+- **增量整理**：新筆記優先手術式補入既有 source／concept／entity 頁；只有現有頁面無合理落點且主題可持續累積時才新增頁面。
 
 ## Lint 頻率
 

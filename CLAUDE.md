@@ -1,7 +1,7 @@
 # CLAUDE.md — LLM Wiki 專案操作規範（正式版）
 
 > 本檔是本專案的操作 charter，每個 session 開場載入。**正本**位於 `C:\Users\vincenttseng\LLM_Wiki\CLAUDE.md`。
-> 版本：2026-07-09（導入 H-I-V-R-K-C 學習閉環後改寫）。
+> 版本：2026-07-09（導入 H-I-V-R-K-C 學習閉環後改寫）；2026-07-16 更新工具環境（Python 已安裝）。
 
 ---
 
@@ -61,7 +61,7 @@ LLM_Wiki/
 2. 讀候選頁 + 其相關 backlinks，再作答。
 3. 用 `[[wikilink]]` 引用所有引述的頁面。
 4. 值得複用的答案，歸檔到 `wiki/synthesis/`。
-5. 索引找不到好候選 → 有 Python 時用 `llm-wiki` 技能的 `wiki_search.py` 做 BM25；**目前無 Python，改用手動 Grep/Glob**。
+5. 索引找不到好候選 → 用 `llm-wiki` 技能的 `wiki_search.py` 做 BM25（Python 已安裝，見第 12 節）；找不到腳本或腳本本身有問題時才退回手動 Grep/Glob。
 6. wiki 未涵蓋就**明講**，標為候選 ingest 主題，**絕不編造**（避免 silent corruption）。
 
 ## 6. H-I-V-R-K-C 學習閉環（核心工作流）
@@ -93,9 +93,10 @@ LLM_Wiki/
 
 ## 8. Verification／Code Preservation 的環境邊界（硬規則）
 
-- 本機**無 Python**。凡是能用**現成工具（git、bash/Git Bash、PowerShell）**驗證的，就實測並在 V 表「實際」欄填**真 actual**。
-- 不能在本機執行的（需 Python／特定 runtime／真實惡意樣本環境）：「實際」欄標 `⏳待執行`，程式碼仍完整保存並標 `verified_on_this_machine: false`，**絕不編造執行結果**（不做驗證劇場）。
-- `db/*.jsonl` 目前是「可攜出的結構化備份」，裝 Python 前無法被查詢腳本索引；人看的快取仍是 `index.md` / `log.md`。
+- 本機已裝 **Python 3.12.10**（路徑 `C:\Users\vincenttseng\AppData\Local\Programs\Python\Python312\python.exe`；PATH 已生效，直接打 `python` 即可）。凡是能用**現成工具（git、bash/Git Bash、PowerShell、Python）**驗證的，就實測並在 V 表「實際」欄填**真 actual**。
+- 仍不能在本機執行的（需特定 runtime、真實惡意樣本環境等）：「實際」欄標 `⏳待執行`，程式碼仍完整保存並標 `verified_on_this_machine: false`，**絕不編造執行結果**（不做驗證劇場）。
+- `db/*.jsonl` 現在可被查詢腳本索引（見第 12 節）；`index.md` / `log.md` 仍是人看的快取，兩者應保持一致。
+- 圖譜層（`wiki_graph_*.py`）需另外 `pip install pyyaml`；`wiki_lint.py`/`wiki_search.py`/`wiki_stats.py` 只用標準函式庫，裝好 Python 即可直接跑，不需額外套件。
 
 ## 9. 資安／惡意程式主題原則（防禦優先）
 
@@ -115,15 +116,17 @@ LLM_Wiki/
 
 ## 11. 維護節奏
 
-- 結構性 lint：每 5 次 ingest。語意性 lint：每週或每 20 次 ingest。缺口盤點：每月。
+- 結構性 lint：每 5 次 ingest，或**子專案每完成一個 batch 後**（2026-07-16 教訓：只掃 `wiki/` 會漏掉 `projects/` 內部積累的斷鏈，兩者都要掃）。語意性 lint：每週或每 20 次 ingest。缺口盤點：每月。
 - 結構級里程碑寫 `changelog.md`；逐次 ingest／experiment／lint 寫 `wiki/log.md`。
-- 目前無 Python，`wiki_lint.py` 跑不動，lint 需手動 Grep/Glob（查孤兒頁、失效 `[[連結]]`、超大頁、frontmatter 缺欄位）。
+- Python 已安裝：優先用 `python skills/llm-wiki/scripts/wiki_lint.py wiki/` 做結構性 lint（孤兒頁、失效 `[[連結]]`、超大頁、frontmatter 缺欄位、重複 slug）；子專案 `projects/<name>/` 若也要掃，指向該目錄執行。腳本查不到或有疑慮時，用 Grep/Bash 交叉驗證（如 2026-07-16 那次全庫斷鏈掃描）。
+- 大量批次修改（如全庫 sed 取代）後，務必重跑 lint 腳本驗證，並抽查是否誤壓合法事實（例如版本號批次取代曾意外壓壞一句功能等級陳述）。
+- **Obsidian 空 stub（2026-07-21 教訓）**：`projects/` KB 以 `[[doc-xxx]]`／`[[dsh-xxx]]` 等 **id** 連結，但 Obsidian 只認**檔名**，會把每個「解不到」的 id 連結在庫根生成 0-byte 同名空檔（如 `doc-wazuh-manager.md`），另有 `image1/2/3.md`（貼圖 base64）、`未命名.md`、`experiments/....md` 等編輯殘骸。這類空檔的 stem 會與真頁 id 撞名而**遮蔽孤兒偵測**，須定期清。lint 時一併掃庫根層 `.md`：`find . -maxdepth 1 -name '*.md' -size 0` 找空 stub；刪前先確認同 id 真頁存在且無人以該檔名為唯一連結目標，即可安全刪除（此庫非 git，刪除不可逆，動手前先向使用者確認）。
 
 ## 12. 工具限制
 
-- **無 Python**（只有 Windows Store 佔位程式）：`wiki_search.py` / `wiki_lint.py` / `wiki_stats.py` / graph 工具全部無法執行；`wiki/graph/` 圖譜層**未啟用**，除非日後裝了 Python 且使用者要求。
-- **可用**：`git`、`bash`（Git Bash）、`PowerShell`。這界定了第 8 節 V/C 的可驗證範圍。
-- 裝上 Python 會一次解鎖：JSONL 可查詢、V/C 全面驗證、lint 自動化——值得列為里程碑。
+- **Python 3.12.10 已安裝**（`C:\Users\vincenttseng\AppData\Local\Programs\Python\Python312\python.exe`，已在 PATH）：`wiki_search.py`／`wiki_lint.py`／`wiki_stats.py` 可直接執行（僅用標準函式庫）。`wiki_graph_*.py` 需先 `pip install pyyaml`；`wiki/graph/` 圖譜層仍**未啟用**，除非使用者要求。
+- **可用**：`git`、`bash`（Git Bash）、`PowerShell`、`python`。第 8 節 V/C 的可驗證範圍已擴大到含 Python。
+- JSONL（`db/*.jsonl`）現可被查詢腳本索引，不再只是備份。
 
 ---
 
